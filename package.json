@@ -1,0 +1,29 @@
+{
+  "name": "drop",
+  "version": "1.0.0",
+  "description": "A domain specific JavaScript runtime in WASM, built primarily for file IO and offline scripting.",
+  "main": "test.js",
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zorse-lang/drop.git"
+  },
+  "keywords": [
+    "wasm",
+    "javascript",
+    "runtime",
+    "file",
+    "io",
+    "offline",
+    "scripting"
+  ],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/zorse-lang/drop/issues"
+  },
+  "homepage": "https://github.com/zorse-lang/drop#readme",
+  "dependencies": {
+    "wasm-git": "^0.0.9"
+  }
+}

@@ -64,12 +64,12 @@ ExternalProject_Add(busybox
 
 add_link_options(
   -sNODERAWFS=1
+  -sINVOKE_RUN=0
   -sEXIT_RUNTIME=1
   -sUSE_PTHREADS=1
   -sFORCE_FILESYSTEM=1
-  -sPROXY_TO_PTHREAD=1
-  -sPTHREAD_POOL_SIZE=4
   -sALLOW_MEMORY_GROWTH=1
+  -sEXPORTED_RUNTIME_METHODS=['FS','callMain']
 )
 
 add_compile_options(-pthread)
