@@ -1,7 +1,7 @@
 // search and remove current script from process.argv for busybox
 process.argv = process.argv.filter((arg) => arg !== __filename);
 
-const git = require("wasm-git/lg2");
+const git = require("../build/lg2");
 const drop = require("../build/drop");
 const busybox = require("../build/busybox_unstripped");
 
@@ -32,4 +32,8 @@ class Drop {
 }
 
 process.argv.shift();
+if (process.argv.length === 0) {
+  console.error("Usage: drop <command> [args]");
+  process.exit(1);
+}
 Drop.exec(process.argv[0], ...process.argv.slice(1));

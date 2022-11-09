@@ -22,9 +22,26 @@ endif()
 
 get_filename_component(EMCC_ROOT ${CMAKE_C_COMPILER} DIRECTORY)
 
+ExternalProject_Add(git
+  URL "https://github.com/petersalomonsen/wasm-git/archive/refs/heads/master.zip"
+  CONFIGURE_COMMAND
+  sed -i "s/-DTHREADSAFE=OFF/-DBUILD_TESTS=OFF -DUSE_THREADS=OFF/g" <SOURCE_DIR>/emscriptenbuild/build.sh &&
+  sed -i "s/-lnodefs.js -lidbfs.js/-sNODERAWFS=1 -sEXIT_RUNTIME=1/g" <SOURCE_DIR>/emscriptenbuild/build.sh &&
+  sed -i "s/make lg2/make lg2 -j4/g" <SOURCE_DIR>/emscriptenbuild/build.sh &&
+  ${CMAKE_COMMAND} -E env PATH=${EMCC_ROOT}:$ENV{PATH} sh setup.sh
+  BUILD_COMMAND
+  sed -i "s/git_repository__validate_ownership = true/git_repository__validate_ownership = false/g" <SOURCE_DIR>/libgit2/src/libgit2/repository.c &&
+  cd emscriptenbuild && ${CMAKE_COMMAND} -E env PATH=${EMCC_ROOT}:$ENV{PATH} sh build.sh Release &&
+  ${CMAKE_COMMAND} -E copy <SOURCE_DIR>/examples/lg2.js ${CMAKE_CURRENT_BINARY_DIR}/lg2.js &&
+  ${CMAKE_COMMAND} -E copy <SOURCE_DIR>/examples/lg2.wasm ${CMAKE_CURRENT_BINARY_DIR}/lg2.wasm
+  INSTALL_COMMAND ""
+  EXCLUDE_FROM_ALL FALSE
+  BUILD_IN_SOURCE TRUE
+)
+
 ExternalProject_Add(miniz
   URL "https://github.com/richgel999/miniz/releases/download/2.1.0/miniz-2.1.0.zip"
-  CONFIGURE_COMMAND "" BUILD_COMMAND "" INSTALL_COMMAND "" PATCH_COMMAND ""
+  CONFIGURE_COMMAND "" BUILD_COMMAND "" INSTALL_COMMAND ""
   EXCLUDE_FROM_ALL FALSE
   BUILD_IN_SOURCE TRUE
 )
