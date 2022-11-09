@@ -1,9 +1,13 @@
 {
-  "name": "drop",
+  "name": "@zorse/drop",
   "version": "1.0.0",
+  "private": false,
   "description": "A domain specific JavaScript runtime in WASM, built primarily for file IO and offline scripting.",
-  "main": "test.js",
-  "scripts": {},
+  "main": "src/npm/index.js",
+  "bin": "src/npm/index.js",
+  "scripts": {
+    "prepublishOnly": "sh build.sh --clean && npx webpack"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/zorse-lang/drop.git"
@@ -17,13 +21,16 @@
     "offline",
     "scripting"
   ],
-  "author": "",
-  "license": "ISC",
+  "author": "Sepehr Laal",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/zorse-lang/drop/issues"
   },
   "homepage": "https://github.com/zorse-lang/drop#readme",
-  "dependencies": {
-    "wasm-git": "^0.0.9"
+  "devDependencies": {
+    "copy-webpack-plugin": "^11.0.0",
+    "terser-webpack-plugin": "^5.3.6",
+    "webpack": "^5.75.0",
+    "webpack-cli": "^4.10.0"
   }
 }

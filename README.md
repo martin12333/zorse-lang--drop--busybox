@@ -7,15 +7,47 @@ environment independent of the host system and platform capabilities.
 
 in this document:
 
+- [Usage](#usage)
+  - [Command Line](#command-line)
+  - [Programmatic](#programmatic)
 - [Features](#features)
 - [Architecture](#architecture)
-- [Demo](#demo)
+
+## Usage
+
+### Command Line
+
+```sh
+$ npm install --global @zorse/drop
+$ drop --help
+$ drop ls -la
+$ drop cat README.md
+$ drop node test.js
+```
+
+### Programmatic
+
+```js
+// npm install @zorse/drop
+const drop = require('@zorse/drop');
+
+await drop.exec('cat', 'README.md');
+await drop.exec('ls', '-la');
+await drop.exec('cp', 'FILE1' , 'FILE2');
+```
+
+"drop" is published as a UMD module. Your runtime needs provide the following:
+
+- `console`: stderr/stdout IO interaction
+- `process`: process argv parsing
+- `crypto`: random bytes generation
+- `path`: path manipulation
+- `fs`: file system interaction
 
 ## Features
 
 "drop" currently offers the following tools in WebAssembly:
 
-- `git`: for managing git repositories
 - `drop`: a domain specific JavaScript runtime that emulates a subset of NodeJS
 - `node`: aliased to `drop` for compatibility with existing NodeJS scripts
 - Tools offered through BusyBox:
@@ -83,7 +115,3 @@ to provide a POSIX-like environment anywhere.
 
 The subset of Emscripten + WASI ABIs that "drop" uses is referred to as the Drop
 ABI. This ABI is currently implemented in JavaScript for browsers and NodeJS.
-
-## Demo
-
-![screenshot](demo.png)

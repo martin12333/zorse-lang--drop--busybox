@@ -36,3 +36,6 @@ build
 
 # Node
 node_modules
+
+# Webpack
+dist

@@ -22,23 +22,6 @@ endif()
 
 get_filename_component(EMCC_ROOT ${CMAKE_C_COMPILER} DIRECTORY)
 
-ExternalProject_Add(git
-  URL "https://github.com/petersalomonsen/wasm-git/archive/refs/heads/master.zip"
-  CONFIGURE_COMMAND
-  sed -i "s/-DTHREADSAFE=OFF/-DBUILD_TESTS=OFF -DUSE_THREADS=OFF/g" <SOURCE_DIR>/emscriptenbuild/build.sh &&
-  sed -i "s/-lnodefs.js -lidbfs.js/-sNODERAWFS=1 -sEXIT_RUNTIME=1/g" <SOURCE_DIR>/emscriptenbuild/build.sh &&
-  sed -i "s/make lg2/make lg2 -j4/g" <SOURCE_DIR>/emscriptenbuild/build.sh &&
-  ${CMAKE_COMMAND} -E env PATH=${EMCC_ROOT}:$ENV{PATH} sh setup.sh
-  BUILD_COMMAND
-  sed -i "s/git_repository__validate_ownership = true/git_repository__validate_ownership = false/g" <SOURCE_DIR>/libgit2/src/libgit2/repository.c &&
-  cd emscriptenbuild && ${CMAKE_COMMAND} -E env PATH=${EMCC_ROOT}:$ENV{PATH} sh build.sh Release &&
-  ${CMAKE_COMMAND} -E copy <SOURCE_DIR>/examples/lg2.js ${CMAKE_CURRENT_BINARY_DIR}/lg2.js &&
-  ${CMAKE_COMMAND} -E copy <SOURCE_DIR>/examples/lg2.wasm ${CMAKE_CURRENT_BINARY_DIR}/lg2.wasm
-  INSTALL_COMMAND ""
-  EXCLUDE_FROM_ALL FALSE
-  BUILD_IN_SOURCE TRUE
-)
-
 ExternalProject_Add(miniz
   URL "https://github.com/richgel999/miniz/releases/download/2.1.0/miniz-2.1.0.zip"
   CONFIGURE_COMMAND "" BUILD_COMMAND "" INSTALL_COMMAND ""
@@ -81,15 +64,15 @@ ExternalProject_Add(busybox
 
 add_link_options(
   -sNODERAWFS=1
+  -sMODULARIZE=1
   -sINVOKE_RUN=0
   -sEXIT_RUNTIME=1
-  -sUSE_PTHREADS=1
   -sFORCE_FILESYSTEM=1
   -sALLOW_MEMORY_GROWTH=1
   -sEXPORTED_RUNTIME_METHODS=['FS','callMain']
 )
 
-add_compile_options(-pthread)
+add_compile_options(-Oz)
 
 add_library(quickjs STATIC
   src/quickjs/quickjs.c
@@ -98,6 +81,7 @@ add_library(quickjs STATIC
   src/quickjs/libunicode.c
   src/quickjs/cutils.c
 )
+
 target_compile_options(quickjs PRIVATE -Wno-implicit-const-int-float-conversion)
 
 add_executable(drop
@@ -110,4 +94,4 @@ add_executable(drop
 
 target_link_libraries(drop PRIVATE quickjs)
 target_compile_definitions(drop PRIVATE -DPATH_MAX=4096 -DTLS_AMALGAMATION)
-target_link_options(drop PRIVATE -Wno-pthreads-mem-growth)
+target_link_options(drop PRIVATE)
