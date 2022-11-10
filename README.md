@@ -22,6 +22,7 @@ $ npm install --global @zorse/drop
 $ drop --help
 $ drop ls -la
 $ drop cat README.md
+$ drop cp FILE1 FILE2
 $ drop node test.js
 ```
 
@@ -31,15 +32,16 @@ $ drop node test.js
 // npm install @zorse/drop
 const drop = require('@zorse/drop');
 
-await drop.exec('cat', 'README.md');
 await drop.exec('ls', '-la');
+await drop.exec('cat', 'README.md');
 await drop.exec('cp', 'FILE1' , 'FILE2');
+await drop.exec('node', 'test.js');
 ```
 
-"drop" is published as a UMD module. Your runtime needs provide the following:
+"drop" is published as a UMD module. Runtime needs to provide the following:
 
 - `console`: stderr/stdout IO interaction
-- `process`: process argv parsing
+- `process`: process argv handling
 - `crypto`: random bytes generation
 - `path`: path manipulation
 - `fs`: file system interaction

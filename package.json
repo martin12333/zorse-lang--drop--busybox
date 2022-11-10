@@ -1,12 +1,18 @@
 {
   "name": "@zorse/drop",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "private": false,
-  "description": "A domain specific JavaScript runtime in WASM, built primarily for file IO and offline scripting.",
-  "main": "src/npm/index.js",
-  "bin": "src/npm/index.js",
+  "description": "'drop' is a POSIX-like environment in WebAssembly for offline scripting and file IO.",
+  "main": "src/npm/lib.js",
+  "bin": "src/npm/bin.js",
+  "types": "src/npm/lib.d.ts",
+  "engines": {
+    "node": ">=16"
+  },
   "scripts": {
-    "prepublishOnly": "sh build.sh --clean && npx webpack"
+    "prepublishOnly": "npm run build",
+    "build": "sh build.sh --clean && npx webpack",
+    "test": "node dist/bin.js cat test.js && node dist/bin.js node test.js"
   },
   "repository": {
     "type": "git",

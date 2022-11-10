@@ -1,4 +1,5 @@
 const path = require("path");
+const webpack = require("webpack");
 const CopyPlugin = require("copy-webpack-plugin");
 const TerserPlugin = require("terser-webpack-plugin");
 
@@ -43,8 +44,14 @@ const config = {
     fs: "fs",
     path: "path",
     crypto: "crypto",
+    consoleExt: "console",
+    processExt: "process",
   },
   plugins: [
+    new webpack.ProvidePlugin({
+      process: "processExt",
+      console: "consoleExt",
+    }),
     new CopyPlugin({
       patterns: [
         {
@@ -57,6 +64,11 @@ const config = {
           from: "bin.js",
           to: outDirectory,
         },
+        {
+          context: "src/npm",
+          from: "lib.d.ts",
+          to: path.join(outDirectory, "index.d.ts"),
+        },
         { from: "README.md", to: outDirectory },
         { from: "LICENSE", to: outDirectory },
         {
@@ -66,6 +78,7 @@ const config = {
             const packageJson = JSON.parse(content);
             packageJson.bin = "./bin.js";
             packageJson.main = "./lib.js";
+            packageJson.types = "./index.d.ts";
             delete packageJson.devDependencies;
             delete packageJson.scripts;
             return JSON.stringify(packageJson, null, 2);
