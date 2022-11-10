@@ -13,7 +13,7 @@ class Drop {
    * Consumes "fs", "path", "crypto", "console", "process".
    * @param {Command} cmd
    * @param  {string[]} args
-   * @returns {void}
+   * @returns {Promise<void>}
    */
   static async exec(cmd, ...args) {
     switch (cmd) {

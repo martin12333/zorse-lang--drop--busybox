@@ -10,9 +10,9 @@ declare class Drop {
      * Consumes "fs", "path", "crypto", "console", "process".
      * @param {Command} cmd
      * @param  {string[]} args
-     * @returns {void}
+     * @returns {Promise<void>}
      */
-    static exec(cmd: Command, ...args: string[]): void;
+    static exec(cmd: Command, ...args: string[]): Promise<void>;
 }
 declare namespace Drop {
     export { BusyBoxCommands, AddedCommands, Command };
