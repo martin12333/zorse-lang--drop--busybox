@@ -33,6 +33,7 @@
 
 # CMake
 build
+out
 
 # Node
 node_modules

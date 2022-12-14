@@ -3,14 +3,15 @@ const webpack = require("webpack");
 const CopyPlugin = require("copy-webpack-plugin");
 const TerserPlugin = require("terser-webpack-plugin");
 
-const isProduction = process.env.NODE_ENV == "production";
-const outDirectory = path.resolve(__dirname, "dist");
+const OUT_DIR = path.resolve(__dirname, "dist");
 
+/** @type {webpack.Configuration} */
 const config = {
   devtool: false,
+  mode: "production",
   entry: "./src/npm/lib.js",
   output: {
-    path: outDirectory,
+    path: OUT_DIR,
     library: {
       commonjs: "drop",
       amd: "drop",
@@ -44,36 +45,33 @@ const config = {
     fs: "fs",
     path: "path",
     crypto: "crypto",
+    bufferExt: "buffer",
     consoleExt: "console",
     processExt: "process",
   },
   plugins: [
     new webpack.ProvidePlugin({
-      process: "processExt",
+      process: require.resolve("./src/npm/process.js"),
       console: "consoleExt",
+      Buffer: ["bufferExt", "Buffer"],
     }),
     new CopyPlugin({
       patterns: [
         {
-          context: "build",
-          from: "*.wasm",
-          to: outDirectory,
-        },
-        {
           context: "src/npm",
           from: "bin.js",
-          to: outDirectory,
+          to: OUT_DIR,
         },
         {
           context: "src/npm",
           from: "lib.d.ts",
-          to: path.join(outDirectory, "index.d.ts"),
+          to: path.join(OUT_DIR, "index.d.ts"),
         },
-        { from: "README.md", to: outDirectory },
-        { from: "LICENSE", to: outDirectory },
+        { from: "README.md", to: OUT_DIR },
+        { from: "LICENSE", to: OUT_DIR },
         {
           from: "package.json",
-          to: path.join(outDirectory, "package.json"),
+          to: path.join(OUT_DIR, "package.json"),
           transform: (content) => {
             const packageJson = JSON.parse(content);
             packageJson.bin = "./bin.js";
@@ -87,13 +85,23 @@ const config = {
       ],
     }),
   ],
+  module: {
+    rules: [
+      {
+        test: [require.resolve("./out/web/dropbox.js"), require.resolve("./out/web/busybox.js")],
+        loader: "string-replace-loader",
+        options: {
+          multiple: [
+            {
+              search: /if\s?\(e instanceof ExitStatus\)\s?return;/g,
+              replace:
+                "if (e instanceof ExitStatus || (e instanceof WebAssembly.RuntimeError && e.message === 'unreachable')) return;",
+            },
+          ],
+        },
+      },
+    ],
+  },
 };
 
-module.exports = () => {
-  if (isProduction) {
-    config.mode = "production";
-  } else {
-    config.mode = "development";
-  }
-  return config;
-};
+module.exports = config;

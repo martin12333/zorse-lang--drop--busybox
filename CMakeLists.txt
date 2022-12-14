@@ -33,6 +33,25 @@ ExternalProject_Get_property(miniz SOURCE_DIR)
 set(MINIZ_SOURCE_DIR ${SOURCE_DIR})
 unset(SOURCE_DIR)
 
+option(NODERAWFS_ENABLE "Enable Foo" ON)
+set(LDFLAGS_LIST
+  "-lproxyfs.js"
+  "-sSINGLE_FILE=1"
+  "-sMODULARIZE=1"
+  "-sFORCE_FILESYSTEM=1"
+  "-sALLOW_MEMORY_GROWTH=1"
+  "-sEXIT_RUNTIME=1"
+  "-sINVOKE_RUN=0"
+  "-sEXPORTED_RUNTIME_METHODS=FS,MEMFS,PROXYFS,NODERAWFS,callMain"
+  "-sENVIRONMENT=node")
+
+if(NODERAWFS_ENABLE)
+  list(APPEND LDFLAGS_LIST "-sNODERAWFS=1")
+endif()
+
+list(JOIN LDFLAGS_LIST " " BUSYBOX_CONFIG_EXTRA_LDFLAGS)
+configure_file(src/misc/.config ${CMAKE_CURRENT_BINARY_DIR}/.config)
+
 ExternalProject_Add(busybox
   DEPENDS miniz
   URL "https://busybox.net/downloads/busybox-1.32.0.tar.bz2"
@@ -44,7 +63,7 @@ ExternalProject_Add(busybox
   ${CMAKE_COMMAND} -E copy
   ${MINIZ_SOURCE_DIR}/miniz.h <SOURCE_DIR>/archival/miniz.h &&
   ${CMAKE_COMMAND} -E copy
-  ${CMAKE_CURRENT_SOURCE_DIR}/src/misc/.config <SOURCE_DIR>/.config &&
+  ${CMAKE_CURRENT_BINARY_DIR}/.config <SOURCE_DIR>/.config &&
   ${CMAKE_COMMAND} -E make_directory <SOURCE_DIR>/arch/em &&
   ${CMAKE_COMMAND} -E copy
   ${CMAKE_CURRENT_SOURCE_DIR}/src/misc/Makefile <SOURCE_DIR>/arch/em/Makefile &&
@@ -54,24 +73,13 @@ ExternalProject_Add(busybox
   SRCDIR=${CMAKE_CURRENT_SOURCE_DIR}/src/misc
   ${EMCC_ROOT}/emmake make ARCH=em CROSS_COMPILE=em SKIP_STRIP=y &&
   ${CMAKE_COMMAND} -E copy
-  <SOURCE_DIR>/busybox_unstripped.js ${CMAKE_CURRENT_BINARY_DIR}/busybox_unstripped.js &&
-  ${CMAKE_COMMAND} -E copy
-  <SOURCE_DIR>/busybox_unstripped.wasm ${CMAKE_CURRENT_BINARY_DIR}/busybox_unstripped.wasm
+  <SOURCE_DIR>/busybox_unstripped.js ${CMAKE_CURRENT_BINARY_DIR}/busybox_unstripped.js
   INSTALL_COMMAND ""
   EXCLUDE_FROM_ALL FALSE
   BUILD_IN_SOURCE TRUE
 )
 
-add_link_options(
-  -sNODERAWFS=1
-  -sMODULARIZE=1
-  -sINVOKE_RUN=0
-  -sEXIT_RUNTIME=1
-  -sFORCE_FILESYSTEM=1
-  -sALLOW_MEMORY_GROWTH=1
-  -sEXPORTED_RUNTIME_METHODS=['FS','callMain']
-)
-
+add_link_options(${LDFLAGS_LIST})
 add_compile_options(-Oz)
 
 add_library(quickjs STATIC
