@@ -14,8 +14,8 @@ declare class Drop {
      */
     static exec(cmd: Command, ...args: string[]): Promise<void>;
 
-    static DropBox: new (Module?: { /* EMCC input Module object */ }) => { /* EMCC Module */ };
-    static BusyBox: new (Module?: { /* EMCC input Module object */ }) => { /* EMCC Module */ };
+    static mkDropBox: (args: string[], Module?: { /* EMCC input Module object */ }, variant?: "web" | "node") => { /* EMCC Module */ };
+    static mkBusyBox: (args: string[], Module?: { /* EMCC input Module object */ }, variant?: "web" | "node") => { /* EMCC Module */ };
 }
 declare namespace Drop {
     export { BusyBoxCommands, AddedCommands, Command };

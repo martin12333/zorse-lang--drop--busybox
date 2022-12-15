@@ -1,5 +1,5 @@
 module.exports =
-  typeof window !== "undefined"
+  typeof window !== "undefined" || typeof postMessage !== "undefined"
     ? {
         on: () => {},
         env: {},

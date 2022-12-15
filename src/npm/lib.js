@@ -1,12 +1,46 @@
-async function execAssembly(lib, args) {
-  // rome-ignore lint/style/useTemplate: <explanation>
-  const factory = require("../../out/node/" + lib + ".js");
-  const instance = await factory();
-  return instance.callMain(args);
-}
+const DEFAULT_VARIANT =
+  typeof window !== "undefined" || typeof postMessage !== "undefined"
+    ? "web"
+    : "node";
 
-const execDropBox = async (args) => await execAssembly("dropbox", args);
-const execBusyBox = async (args) => await execAssembly("busybox", args);
+const mkDropBox = async (
+  args,
+  Module = undefined,
+  variant = DEFAULT_VARIANT
+) => {
+  // rome-ignore lint/style/useTemplate: <explanation>
+  const factory = require("../../out/" + variant + "/dropbox.js");
+  const instance = await factory(Module);
+  return { instance, exec: () => instance.callMain(args) };
+};
+
+const mkBusyBox = async (
+  args,
+  Module = undefined,
+  variant = DEFAULT_VARIANT
+) => {
+  const cmd = args[0];
+  const newArgs = args.slice(1);
+  const oldProcArgv = process.argv;
+  process.argv = ["drop", cmd === "zip" ? "nanozip" : cmd];
+  // rome-ignore lint/style/useTemplate: <explanation>
+  const factory = require("../../out/" + variant + "/busybox.js");
+  const instance = await factory(Module);
+  return {
+    instance,
+    exec: () => {
+      const result = instance.callMain(newArgs);
+      if (result instanceof Promise) {
+        result.finally(() => {
+          process.argv = oldProcArgv;
+        });
+      } else {
+        process.argv = oldProcArgv;
+      }
+      return result;
+    },
+  };
+};
 
 /**
  * @typedef {("base64"|"basename"|"cat"|"chmod"|"chown"|"clear"|"cp"|"date"|"diff"|"echo"|"egrep"|"env"|"false"|"fgrep"|"find"|"grep"|"head"|"link"|"ln"|"ls"|"md5sum"|"mkdir"|"mktemp"|"mv"|"nanozip"|"patch"|"printenv"|"printf"|"pwd"|"readlink"|"realpath"|"rm"|"rmdir"|"sed"|"sha256sum"|"sleep"|"sort"|"stat"|"tail"|"tar"|"test"|"touch"|"true"|"uniq"|"unlink"|"unzip"|"whoami"|"xargs")} BusyBoxCommands
@@ -26,21 +60,15 @@ class Drop {
     switch (cmd) {
       case "drop":
       case "node": {
-        return await execDropBox(args);
+        return await (await mkDropBox(args)).exec();
       }
       default: {
-        // TODO: this needs to be patched at BusyBox source level.
-        const oldProcArgv = process.argv;
-        process.argv = ["drop", cmd === "zip" ? "nanozip" : cmd];
-        return await execBusyBox(args).finally(() => {
-          process.argv = oldProcArgv;
-        });
+        return await (await mkBusyBox([cmd, ...args])).exec();
       }
     }
   }
 }
 
 module.exports = Drop;
-
-Drop.DropBox = require("../../out/web/dropbox");
-Drop.BusyBox = require("../../out/web/busybox");
+Drop.mkDropBox = mkDropBox;
+Drop.mkBusyBox = mkBusyBox;
