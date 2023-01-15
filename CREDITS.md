@@ -1,5 +1,6 @@
 # Credits and Acknowledgements
 
-- Base runtime: <https://github.com/eduardsui/jib.js>
-- Base busybox: <https://github.com/vadimkantorov/busyboxnanozipdiff3>
-- Base libgit2: <https://github.com/petersalomonsen/wasm-git>
+- For the mvp runtime: <https://github.com/eduardsui/jib.js>
+- For Base busybox build scripts: <https://github.com/vadimkantorov/busyboxnanozipdiff3>
+- For initial Rust rewrite starting point: <https://github.com/second-state/wasmedge-quickjs>
+- For excellent SWC abstractions: <https://github.com/aalykiot/dune>

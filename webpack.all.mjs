@@ -1,17 +1,9 @@
+import AfterBuildPlugin from "@fiverr/afterbuild-webpack-plugin";
 import CopyPlugin from "copy-webpack-plugin";
 import TerserPlugin from "terser-webpack-plugin";
 import { execSync } from "child_process";
 import path from "path";
 import webpack from "webpack";
-
-// Build the BusyBox runtime with Emscripten (busybox)
-execSync("bash build.sh", { stdio: "inherit" });
-
-// Generate the bundled standard core modules (std)
-execSync("npx webpack --config webpack.std.mjs", { stdio: "inherit" });
-
-// Build the Drop runtime with Cargo (drop)
-execSync("cargo build --release", { stdio: "inherit" });
 
 const OUT_DIR = path.resolve("dist");
 execSync(`rm -rf ${OUT_DIR}`);
@@ -52,19 +44,25 @@ const config = {
       }),
     ],
   },
+  performance: {
+    hints: false,
+  },
+  externalsPresets: {
+    node: true,
+  },
   externals: {
-    fs: "fs",
-    path: "path",
-    wasi: "wasi",
-    crypto: "crypto",
     bufferExt: "buffer",
     consoleExt: "console",
     processExt: "process",
   },
   plugins: [
+    new AfterBuildPlugin(() => {
+      execSync(`cp src/npm/index.d.ts ${OUT_DIR}`);
+    }),
     new CopyPlugin({
       patterns: [
-        { from: "index.d.ts", to: OUT_DIR, context: "src/npm" },
+        { from: "drop.wasm", to: OUT_DIR, context: "target/wasm32-wasi/release" },
+        // { from: "index.d.ts", to: OUT_DIR, context: "src/npm" },
         { from: "bin.js", to: OUT_DIR, context: "src/npm" },
         { from: "README.md", to: OUT_DIR },
         { from: "LICENSE", to: OUT_DIR },
@@ -87,6 +85,7 @@ const config = {
       process: path.resolve("./src/npm/process.js"),
       console: "consoleExt",
       Buffer: ["bufferExt", "Buffer"],
+      Url: ["url", "Url"],
     }),
   ],
   module: {

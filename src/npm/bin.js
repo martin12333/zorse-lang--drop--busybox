@@ -15,7 +15,7 @@ try {
         env,
         stdio: "inherit",
       });
-      process.exit(status || 1);
+      process.exit(status ?? 1);
     } catch (err) {
       console.error("Fatal error", err);
       process.exit(1);
@@ -26,8 +26,11 @@ try {
   }
 }
 const { exec } = require("./drop");
-if (process.argv.length < 3 || process.argv[2] === "--help") {
+const scriptIndex = process.argv.findIndex((arg) => arg === __filename);
+const cmd = process.argv[scriptIndex + 1];
+const args = process.argv.slice(scriptIndex + 2);
+if (process.argv.length < 3 || cmd === "--help") {
   exec("busybox", "--help");
 } else {
-  exec(process.argv[2], ...process.argv.slice(3));
+  exec(cmd, ...args);
 }

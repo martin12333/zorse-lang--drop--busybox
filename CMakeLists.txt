@@ -54,7 +54,7 @@ configure_file(src/misc/.config ${CMAKE_CURRENT_BINARY_DIR}/.config)
 
 ExternalProject_Add(busybox
   DEPENDS miniz
-  URL "https://busybox.net/downloads/busybox-1.32.0.tar.bz2"
+  URL "https://github.com/mirror/busybox/archive/refs/tags/1_32_0.zip"
   CONFIGURE_COMMAND
   ${CMAKE_COMMAND} -E copy
   ${CMAKE_CURRENT_SOURCE_DIR}/src/misc/nanozip.c <SOURCE_DIR>/archival/nanozip.c &&
@@ -67,9 +67,11 @@ ExternalProject_Add(busybox
   ${CMAKE_COMMAND} -E make_directory <SOURCE_DIR>/arch/em &&
   ${CMAKE_COMMAND} -E copy
   ${CMAKE_CURRENT_SOURCE_DIR}/src/misc/Makefile <SOURCE_DIR>/arch/em/Makefile &&
-  ${CMAKE_COMMAND} -E create_symlink ${EMCC_ROOT}/emcc.py ${CMAKE_CURRENT_BINARY_DIR}/emgcc
+  ${CMAKE_COMMAND} -E create_symlink ${EMCC_ROOT}/emcc ${CMAKE_CURRENT_BINARY_DIR}/emgcc &&
+  ${CMAKE_COMMAND} -E create_symlink ${EMCC_ROOT}/emcc.py ${CMAKE_CURRENT_BINARY_DIR}/emgcc.py
   BUILD_COMMAND ${CMAKE_COMMAND} -E env
   PATH=${CMAKE_CURRENT_BINARY_DIR}:$ENV{PATH}
+  BUILD_COMMAND ${CMAKE_COMMAND} -E env _EMCC_CCACHE=1
   SRCDIR=${CMAKE_CURRENT_SOURCE_DIR}/src/misc
   ${EMCC_ROOT}/emmake make ARCH=em CROSS_COMPILE=em SKIP_STRIP=y &&
   ${CMAKE_COMMAND} -E copy

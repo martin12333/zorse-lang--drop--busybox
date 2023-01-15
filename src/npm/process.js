@@ -13,20 +13,26 @@ const performanceNow =
 
 // generate timestamp or delta
 // see http://nodejs.org/api/process.html#process_process_hrtime
-function hrtime(previousTimestamp) {
+const NS_PER_SEC = 1e9;
+const hrtime = (previousTimestamp) => {
   const clocktime = performanceNow.call(performance) * 1e-3;
   let seconds = Math.floor(clocktime);
-  let nanoseconds = Math.floor((clocktime % 1) * 1e9);
+  let nanoseconds = Math.floor((clocktime % 1) * NS_PER_SEC);
   if (previousTimestamp) {
     seconds = seconds - previousTimestamp[0];
     nanoseconds = nanoseconds - previousTimestamp[1];
     if (nanoseconds < 0) {
       seconds--;
-      nanoseconds += 1e9;
+      nanoseconds += NS_PER_SEC;
     }
   }
   return [seconds, nanoseconds];
-}
+};
+// https://github.com/sagemathinc/cowasm/blob/7ec0dad2ef471edf893c75d65a86000d82d16024/packages/wasi-js/src/bindings/browser-hrtime.ts
+hrtime.bigint = (time) => {
+  const diff = hrtime(time);
+  return diff[0] * NS_PER_SEC + diff[1];
+};
 
 module.exports =
   typeof window !== "undefined" || typeof postMessage !== "undefined"
