@@ -1,0 +1,36 @@
+[package]
+name = "drop"
+version = "1.0.0"
+authors = ["Sepehr Laal"]
+description = "Experimental Drop Runtime in Rust"
+repository = "https://github.com/zorse-lang/drop"
+license = "MIT OR Apache-2.0"
+readme = "README.md"
+documentation = "https://github.com/zorse-lang/drop"
+homepage = "https://github.com/zorse-lang/drop"
+edition = "2018"
+exclude = [
+    "examples/*",
+]
+
+[dependencies]
+argparse = "0.2.2"
+libc = "0.2"
+url = "2.2.2"
+lazy_static = "1.4"
+encoding = "0.2"
+anyhow = "1.0.68"
+regex = "1.7.1"
+swc_common = { version = "0.29.27", features = ["tty-emitter"] }
+swc_ecma_codegen = "0.129.2"
+swc_ecma_parser = "0.124.1"
+swc_ecma_transforms_base = "0.114.0"
+swc_ecma_visit = "0.82.0"
+swc_ecma_transforms_react = "0.158.0"
+swc_ecma_transforms_typescript = "0.162.0"
+flate2 = "1.0.25"
+tar = "0.4.38"
+
+[build-dependencies]
+flate2 = "1.0.25"
+tar = "0.4.38"

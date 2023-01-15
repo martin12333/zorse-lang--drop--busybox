@@ -13,7 +13,6 @@ function build() {
   cmake --build build
   mkdir -p $out
   cp build/busybox_unstripped.js $out/busybox.js
-  cp build/drop.js $out/dropbox.js
 }
 
 build node ON

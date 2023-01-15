@@ -78,28 +78,3 @@ ExternalProject_Add(busybox
   EXCLUDE_FROM_ALL FALSE
   BUILD_IN_SOURCE TRUE
 )
-
-add_link_options(${LDFLAGS_LIST})
-add_compile_options(-Oz)
-
-add_library(quickjs STATIC
-  src/quickjs/quickjs.c
-  src/quickjs/libbf.c
-  src/quickjs/libregexp.c
-  src/quickjs/libunicode.c
-  src/quickjs/cutils.c
-)
-
-target_compile_options(quickjs PRIVATE -Wno-implicit-const-int-float-conversion)
-
-add_executable(drop
-  src/main.c
-  src/builtins.c
-  src/builtins_io.c
-  src/builtins_crypto.c
-  src/misc/tlse.c
-)
-
-target_link_libraries(drop PRIVATE quickjs)
-target_compile_definitions(drop PRIVATE -DPATH_MAX=4096 -DTLS_AMALGAMATION)
-target_link_options(drop PRIVATE)

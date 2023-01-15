@@ -1,19 +1,18 @@
 {
   "name": "@zorse/drop",
-  "version": "2.0.2",
+  "version": "3.0.0",
   "private": false,
-  "description": "'drop' is a POSIX-like environment in WebAssembly for offline scripting and file IO.",
-  "main": "src/npm/lib.js",
-  "bin": "src/npm/bin.js",
-  "types": "src/npm/lib.d.ts",
+  "description": "'drop' is a small toolbox of common tools in WebAssembly to provide a POSIX-like environment independent of the host system and platform capabilities.",
+  "main": "./dist/drop.js",
+  "bin": "./dist/bin.js",
+  "types": "./dist/index.d.ts",
   "engines": {
     "node": ">=16"
   },
   "scripts": {
     "prepublishOnly": "npm run build",
-    "build": "bash build.sh --clean && npm run bundle",
-    "bundle": "npx webpack",
-    "test": "node dist/bin.js cat test.js && node dist/bin.js node test.js"
+    "build": "webpack --config webpack.all.mjs",
+    "test": "node dist/bin.js cat test.ts && node dist/bin.js node test.ts"
   },
   "repository": {
     "type": "git",
@@ -35,10 +34,19 @@
   },
   "homepage": "https://github.com/zorse-lang/drop#readme",
   "devDependencies": {
+    "@types/atob-lite": "^2.0.0",
+    "@types/node": "^18.11.18",
+    "atob-lite": "^2.0.0",
+    "browserify-zlib": "^0.2.0",
     "constants-browserify": "^1.0.0",
     "copy-webpack-plugin": "^11.0.0",
+    "crypto-browserify": "^3.12.0",
+    "memfs": "^3.4.13",
     "string-replace-loader": "^3.1.0",
     "terser-webpack-plugin": "^5.3.6",
+    "ts-loader": "^9.4.2",
+    "tsx": "^3.12.2",
+    "url-loader": "^4.1.1",
     "webpack": "^5.75.0",
     "webpack-cli": "^5.0.1"
   }
