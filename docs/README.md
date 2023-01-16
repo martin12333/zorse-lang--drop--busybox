@@ -32,19 +32,19 @@ Drop ABI variation
 
 #### Defined in
 
-[index.ts:10](https://github.com/zorse-lang/drop/blob/d9b8ab3/src/npm/index.ts#L10)
+[index.ts:10](https://github.com/zorse-lang/drop/blob/12551aa/src/npm/index.ts#L10)
 
 ___
 
 ### ExecCommand
 
-Ƭ **ExecCommand**: ``"base64"`` \| ``"basename"`` \| ``"cat"`` \| ``"chmod"`` \| ``"chown"`` \| ``"clear"`` \| ``"cp"`` \| ``"date"`` \| ``"diff"`` \| ``"echo"`` \| ``"egrep"`` \| ``"env"`` \| ``"false"`` \| ``"fgrep"`` \| ``"find"`` \| ``"grep"`` \| ``"head"`` \| ``"link"`` \| ``"ln"`` \| ``"ls"`` \| ``"md5sum"`` \| ``"mkdir"`` \| ``"mktemp"`` \| ``"mv"`` \| ``"nanozip"`` \| ``"patch"`` \| ``"printenv"`` \| ``"printf"`` \| ``"pwd"`` \| ``"readlink"`` \| ``"realpath"`` \| ``"rm"`` \| ``"rmdir"`` \| ``"sed"`` \| ``"sha256sum"`` \| ``"sleep"`` \| ``"sort"`` \| ``"stat"`` \| ``"tail"`` \| ``"tar"`` \| ``"test"`` \| ``"touch"`` \| ``"true"`` \| ``"uniq"`` \| ``"unlink"`` \| ``"unzip"`` \| ``"whoami"`` \| ``"xargs"`` \| ``"drop"`` \| ``"node"`` \| ``"zip"``
+Ƭ **ExecCommand**: ``"base64"`` \| ``"basename"`` \| ``"cat"`` \| ``"chmod"`` \| ``"chown"`` \| ``"clear"`` \| ``"cp"`` \| ``"date"`` \| ``"diff"`` \| ``"echo"`` \| ``"egrep"`` \| ``"env"`` \| ``"false"`` \| ``"fgrep"`` \| ``"find"`` \| ``"grep"`` \| ``"head"`` \| ``"link"`` \| ``"ln"`` \| ``"ls"`` \| ``"md5sum"`` \| ``"mkdir"`` \| ``"mktemp"`` \| ``"mv"`` \| ``"nanozip"`` \| ``"patch"`` \| ``"printenv"`` \| ``"printf"`` \| ``"pwd"`` \| ``"readlink"`` \| ``"realpath"`` \| ``"rm"`` \| ``"rmdir"`` \| ``"sed"`` \| ``"sha256sum"`` \| ``"sleep"`` \| ``"sort"`` \| ``"stat"`` \| ``"tail"`` \| ``"tar"`` \| ``"test"`` \| ``"touch"`` \| ``"true"`` \| ``"uniq"`` \| ``"unlink"`` \| ``"unzip"`` \| ``"whoami"`` \| ``"xargs"`` \| ``"drop"`` \| ``"node"`` \| ``"zip"`` \| ``"busybox"``
 
 All available commands
 
 #### Defined in
 
-[index.ts:140](https://github.com/zorse-lang/drop/blob/d9b8ab3/src/npm/index.ts#L140)
+[index.ts:140](https://github.com/zorse-lang/drop/blob/12551aa/src/npm/index.ts#L140)
 
 ## Functions
 
@@ -81,7 +81,7 @@ Runner to execute the command
 
 #### Defined in
 
-[index.ts:207](https://github.com/zorse-lang/drop/blob/d9b8ab3/src/npm/index.ts#L207)
+[index.ts:208](https://github.com/zorse-lang/drop/blob/12551aa/src/npm/index.ts#L208)
 
 ___
 
@@ -119,7 +119,7 @@ Runner to execute the command
 
 #### Defined in
 
-[index.ts:106](https://github.com/zorse-lang/drop/blob/d9b8ab3/src/npm/index.ts#L106)
+[index.ts:106](https://github.com/zorse-lang/drop/blob/12551aa/src/npm/index.ts#L106)
 
 ___
 
@@ -150,4 +150,4 @@ Runner to execute the command
 
 #### Defined in
 
-[index.ts:63](https://github.com/zorse-lang/drop/blob/d9b8ab3/src/npm/index.ts#L63)
+[index.ts:63](https://github.com/zorse-lang/drop/blob/12551aa/src/npm/index.ts#L63)

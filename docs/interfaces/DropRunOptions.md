@@ -33,7 +33,7 @@ Command line arguments
 
 #### Defined in
 
-[index.ts:31](https://github.com/zorse-lang/drop/blob/d9b8ab3/src/npm/index.ts#L31)
+[index.ts:31](https://github.com/zorse-lang/drop/blob/12551aa/src/npm/index.ts#L31)
 
 ___
 
@@ -45,7 +45,7 @@ Buffer as input to
 
 #### Defined in
 
-[index.ts:41](https://github.com/zorse-lang/drop/blob/d9b8ab3/src/npm/index.ts#L41)
+[index.ts:41](https://github.com/zorse-lang/drop/blob/12551aa/src/npm/index.ts#L41)
 
 ___
 
@@ -57,7 +57,7 @@ File to run, can be .[cm]js, .[cm]ts, or .[cm]tsx
 
 #### Defined in
 
-[index.ts:39](https://github.com/zorse-lang/drop/blob/d9b8ab3/src/npm/index.ts#L39)
+[index.ts:39](https://github.com/zorse-lang/drop/blob/12551aa/src/npm/index.ts#L39)
 
 ___
 
@@ -73,4 +73,4 @@ ABI variant to use
 
 #### Defined in
 
-[index.ts:33](https://github.com/zorse-lang/drop/blob/d9b8ab3/src/npm/index.ts#L33)
+[index.ts:33](https://github.com/zorse-lang/drop/blob/12551aa/src/npm/index.ts#L33)
