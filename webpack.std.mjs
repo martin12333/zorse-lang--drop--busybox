@@ -45,6 +45,9 @@ const createConfig = (name) => {
         .concat(ALL_PACKAGES.filter((p) => p !== name))
         .reduce((acc, curr) => ((acc[curr] = curr), acc), {}),
     },
+    performance: {
+      hints: false,
+    },
     optimization: {
       nodeEnv: false,
       minimize: true,

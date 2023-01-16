@@ -1,5 +1,6 @@
 import AfterBuildPlugin from "@fiverr/afterbuild-webpack-plugin";
 import CopyPlugin from "copy-webpack-plugin";
+import ShebangPlugin from "webpack-shebang-plugin";
 import TerserPlugin from "terser-webpack-plugin";
 import { execSync } from "child_process";
 import path from "path";
@@ -9,7 +10,7 @@ const OUT_DIR = path.resolve("dist");
 execSync(`rm -rf ${OUT_DIR}`);
 
 /** @type {webpack.Configuration} */
-const config = {
+const libConfig = {
   devtool: false,
   mode: "production",
   entry: "./src/npm/index.ts",
@@ -23,7 +24,7 @@ const config = {
     libraryTarget: "umd",
     umdNamedDefine: true,
     globalObject: `(typeof self !== 'undefined' ? self : this)`,
-    filename: "drop.js",
+    filename: "index.js",
   },
   node: {
     global: false,
@@ -62,8 +63,6 @@ const config = {
     new CopyPlugin({
       patterns: [
         { from: "drop.wasm", to: OUT_DIR, context: "target/wasm32-wasi/release" },
-        // { from: "index.d.ts", to: OUT_DIR, context: "src/npm" },
-        { from: "bin.js", to: OUT_DIR, context: "src/npm" },
         { from: "README.md", to: OUT_DIR },
         { from: "LICENSE", to: OUT_DIR },
         {
@@ -72,10 +71,10 @@ const config = {
           transform: (content) => {
             const packageJson = JSON.parse(content);
             packageJson.bin = "./bin.js";
-            packageJson.main = "./drop.js";
+            packageJson.main = "./index.js";
             packageJson.types = "./index.d.ts";
-            delete packageJson.devDependencies;
-            delete packageJson.scripts;
+            packageJson.devDependencies = undefined;
+            packageJson.scripts = undefined;
             return JSON.stringify(packageJson, null, 2);
           },
         },
@@ -121,8 +120,17 @@ const config = {
     ],
   },
   resolve: {
-    extensions: [".tsx", ".ts", ".jsx", ".js", "..."],
+    extensions: [".tsx", ".ts", ".jsx", ".js"],
   },
 };
 
-export default config;
+const binConfig = { ...libConfig };
+binConfig.entry = "./src/npm/bin.ts";
+binConfig.plugins = [new ShebangPlugin()];
+binConfig.target = "node";
+binConfig.output = {
+  path: OUT_DIR,
+  filename: "bin.js",
+};
+
+export default [libConfig, binConfig];

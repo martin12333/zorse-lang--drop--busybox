@@ -188,7 +188,8 @@ export type ExecCommand =
 	| "xargs"
 	| "drop"
 	| "node"
-	| "zip";
+	| "zip"
+	| "busybox";
 
 /**
  * Convenience function to run an either a "dropbox" or "busybox" command
