@@ -1,6 +1,6 @@
 {
   "name": "@zorse/drop",
-  "version": "3.0.1",
+  "version": "3.0.2",
   "private": false,
   "description": "'drop' is a small toolbox of common tools in WebAssembly to provide a POSIX-like environment independent of the host system and platform capabilities.",
   "main": "./dist/index.js",

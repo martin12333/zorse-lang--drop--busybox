@@ -7,6 +7,24 @@ environment independent of the host system and platform capabilities.
 
 "drop" is designed primarily as a toolbox for file IO and offline scripting.
 
+```sh
+$ npm install --global @zorse/drop
+
+$ drop node test.ts
+Hello From WASI!
+
+$ drop ls
+webpack.std.mjs    src                lib                LICENSE
+webpack.all.mjs    package.json       docs               Cargo.toml
+tsconfig.json      package-lock.json  dist               Cargo.lock
+test.zx.mjs        out                build.zx.mjs       CREDITS.md
+test.ts            node_modules       build.rs           CMakeLists.txt
+target             modules.tar.gz     build
+std                modules            README.md
+
+$ drop zip archive.zip file.txt
+```
+
 API Documentation: [`docs`](docs/README.md#table-of-contents)
 
 ## Features
