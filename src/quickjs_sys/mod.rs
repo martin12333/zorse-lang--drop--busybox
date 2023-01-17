@@ -18,7 +18,7 @@ use modules::get_embedded_module;
 
 #[allow(warnings)]
 mod qjs {
-    include!("../../lib/binding.rs");
+    include!("../../build/binding.rs");
 }
 
 use qjs::*;
@@ -1041,8 +1041,6 @@ impl JsValue {
                 JS_TAG_OBJECT => {
                     if JS_IsFunction(ctx, v) != 0 {
                         JsValue::Function(JsFunction(JsRef { ctx, v }))
-                    } else if JS_IsArrayBuffer(ctx, v) != 0 {
-                        JsValue::ArrayBuffer(JsArrayBuffer(JsRef { ctx, v }))
                     } else if JS_IsArray(ctx, v) != 0 {
                         JsValue::Array(JsArray(JsRef { ctx, v }))
                     } else if JS_IsPromise(ctx, v) != 0 {

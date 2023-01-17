@@ -80,3 +80,44 @@ ExternalProject_Add(busybox
   EXCLUDE_FROM_ALL FALSE
   BUILD_IN_SOURCE TRUE
 )
+
+ExternalProject_Add(wasisdk
+  URL "https://github.com/WebAssembly/wasi-sdk/releases/download/wasi-sdk-19/wasi-sdk-19.0-linux.tar.gz"
+  CONFIGURE_COMMAND "" BUILD_COMMAND "" INSTALL_COMMAND ""
+  EXCLUDE_FROM_ALL FALSE
+  BUILD_IN_SOURCE TRUE
+)
+
+find_program(PATCH NAMES patch PATH_SUFFIXES usr/bin)
+ExternalProject_Add(quickjs
+  URL "https://github.com/bellard/quickjs/archive/2788d71e823b522b178db3b3660ce93689534e6d.zip"
+  CONFIGURE_COMMAND "" BUILD_COMMAND "" INSTALL_COMMAND ""
+  PATCH_COMMAND ${PATCH} -p1 -i ${CMAKE_CURRENT_SOURCE_DIR}/src/quickjs/quickjs.patch
+  EXCLUDE_FROM_ALL FALSE
+  BUILD_IN_SOURCE TRUE
+)
+
+ExternalProject_Get_property(wasisdk SOURCE_DIR)
+set(WASICC ${SOURCE_DIR}/bin/clang)
+set(WASIAR ${SOURCE_DIR}/bin/llvm-ar)
+unset(SOURCE_DIR)
+
+ExternalProject_Get_property(quickjs SOURCE_DIR)
+set(QJS_ROOT ${SOURCE_DIR})
+unset(SOURCE_DIR)
+
+add_custom_target(quickjs-wasi ALL DEPENDS wasisdk quickjs
+  COMMAND ccache ${WASICC} -msimd128 -mbulk-memory -ftls-model=local-exec -c
+  ${QJS_ROOT}/libbf.c ${QJS_ROOT}/cutils.c ${QJS_ROOT}/libunicode.c
+  ${CMAKE_CURRENT_SOURCE_DIR}/src/quickjs/wapper.c ${QJS_ROOT}/libregexp.c ${QJS_ROOT}/quickjs-libc.c
+  -DNO_OS_POLL=1 -DCONFIG_BIGNUM=1 -DCONFIG_VERSION='"wasi"' -O3 -D__wasi__
+  -lwasi-emulated-signal -D_WASI_EMULATED_SIGNAL=1 -Wno-unused-command-line-argument
+  -Wno-implicit-function-declaration -Wno-implicit-const-int-float-conversion
+  COMMAND ${WASIAR} -r libquickjs.a cutils.o libbf.o libunicode.o wapper.o libregexp.o quickjs-libc.o
+  BYPRODUCTS libquickjs.a
+)
+
+add_custom_target(quickjs-wasi-bindgen ALL DEPENDS quickjs-wasi
+  COMMAND bindgen ${CMAKE_CURRENT_SOURCE_DIR}/src/quickjs/wapper.h
+  --no-layout-tests --size_t-is-usize -o binding.rs -- -D__wasi__
+)

@@ -1,14 +1,12 @@
 use flate2::write::GzEncoder;
 use flate2::Compression;
 use std::fs::File;
-use std::path::Path;
 
 fn main() {
-    let out_dir = std::env::var("OUT_DIR").unwrap();
-    let out_dir_path = Path::new(&out_dir);
-    std::fs::copy("lib/libquickjs.a", out_dir_path.join("libquickjs.a"))
-        .expect("Could not copy libquickjs.a to output directory");
-    println!("cargo:rustc-link-search={}", &out_dir);
+    // rerun if any of the files in the "src/quickjs" directory change
+    println!("cargo:rerun-if-changed=src/quickjs");
+    println!("cargo:rerun-if-changed=build/libquickjs.a");
+    println!("cargo:rustc-link-search=native=build");
     println!("cargo:rustc-link-lib=quickjs");
 
     // rerun if any of the files in the "std" directory change
