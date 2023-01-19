@@ -49,3 +49,4 @@ dist
 /modules/memfs.js
 /modules/zlib.js
 !lib/*.a
+embedded_modules.rs

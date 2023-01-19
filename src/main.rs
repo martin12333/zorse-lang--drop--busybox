@@ -27,12 +27,13 @@ fn maybe_transpile(file_path: &String) -> Result<String, Box<dyn std::error::Err
     match ext {
         "jsx" | "tsx" => {
             let code = std::fs::read_to_string(file_path)?;
-            let code = TSX::compile(Some(file_path), &code)?;
+            let code = TSX::compile(Some(file_path), &code, &transpiler::OutputType::ESModule)?;
             Ok(code)
         }
         "ts" => {
             let code = std::fs::read_to_string(file_path)?;
-            let code = TypeScript::compile(Some(file_path), &code)?;
+            let code =
+                TypeScript::compile(Some(file_path), &code, &transpiler::OutputType::ESModule)?;
             Ok(code)
         }
         _ => {

@@ -2,6 +2,7 @@
 mod macros;
 pub mod js_class;
 pub mod js_module;
+pub mod resolver;
 
 use std::collections::HashMap;
 
@@ -12,9 +13,6 @@ use flate2::bufread::GzDecoder;
 use lazy_static::lazy_static;
 use std::io::Read;
 use tar::Archive;
-
-mod modules;
-use modules::get_embedded_module;
 
 #[allow(warnings)]
 mod qjs {
@@ -89,35 +87,9 @@ unsafe extern "C" fn module_loader(
     }
     let module_name = module_name.unwrap();
 
-    let mut path = std::path::PathBuf::from(module_name);
-    let ext = path
-        .extension()
-        .unwrap_or_default()
-        .to_str()
-        .unwrap_or_default();
-    match ext {
-        "" => {
-            path.set_extension("js");
-        }
-        "js" => {}
-        _ => {
-            JS_ThrowReferenceError(
-                ctx,
-                "could not load module filename '%s'\0".as_ptr().cast(),
-                module_name_,
-            );
-            return std::ptr::null_mut();
-        }
-    }
+    let code = resolver::require(module_name);
 
-    let code = if !path.is_file() {
-        path = std::path::PathBuf::from("modules").join(path);
-        get_embedded_module(&path)
-    } else {
-        std::fs::read(&path)
-    };
-
-    if code.is_err() {
+    if code.is_none() {
         JS_ThrowReferenceError(
             ctx,
             "could not load module filename '%s'\0".as_ptr().cast(),
