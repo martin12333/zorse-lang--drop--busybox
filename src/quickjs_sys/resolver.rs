@@ -1,16 +1,20 @@
+mod embedded_modules;
+
+use crate::transpiler::{tsx_to_js_str, tsx_to_js_vec, OutputType};
 use flate2::bufread::GzDecoder;
 use lazy_static::lazy_static;
+use std::fs;
 use std::io::Read;
+use std::io::{Error, ErrorKind};
+use std::path::PathBuf;
 use tar::Archive;
-
-mod embedded_modules;
 
 lazy_static! {
     static ref EMBEDDED_MODULES: &'static [u8] = include_bytes!("../../modules.tar.gz");
 }
 
-pub fn resolve(module_name: &str) -> Option<String> {
-    let mut path = std::path::PathBuf::from(module_name);
+pub fn resolve(module_name: &str) -> Result<String, Error> {
+    let mut path = PathBuf::from(module_name);
     let ext = path
         .extension()
         .unwrap_or_default()
@@ -19,30 +23,48 @@ pub fn resolve(module_name: &str) -> Option<String> {
     match ext {
         "" => {
             path.set_extension("js");
-            return Some(path.to_str().unwrap().to_string());
+            Ok(path.to_str().unwrap().to_string())
         }
-        "js" => Some(path.to_str().unwrap().to_string()),
-        _ => {
-            return None;
+        "js" | "ts" | "tsx" | "jsx" | "cjs" | "mjs" | "cts" | "mts" | "zrc" => {
+            Ok(path.to_str().unwrap().to_string())
         }
+        _ => Err(Error::new(
+            ErrorKind::InvalidInput,
+            format!("invalid resolver extension: {}", ext),
+        )),
     }
 }
 
-pub fn require(module_name: &str) -> Option<Vec<u8>> {
+pub fn require(module_name: &str) -> Result<Vec<u8>, Error> {
     let path = resolve(module_name);
-    if path.is_none() {
-        return None;
-    }
-    let code = if is_embedded_module(module_name) {
-        let path = std::path::PathBuf::from("modules").join(path.unwrap());
+    if is_embedded_module(module_name) {
+        let path = PathBuf::from("modules").join(path?);
         read_embedded_module(&path)
     } else {
-        std::fs::read(path.unwrap())
-    };
-    if code.is_err() {
-        return None;
+        let buf = fs::read(path.unwrap());
+        tsx_to_js_vec(
+            Some(module_name),
+            &String::from_utf8(buf.unwrap()).unwrap(),
+            &OutputType::CommonJS,
+        )
+        .map_err(|e| Error::new(ErrorKind::Other, e))
     }
-    Some(code.unwrap())
+}
+
+pub fn import(module_name: &str) -> Result<Vec<u8>, Error> {
+    let path = resolve(module_name);
+    if is_embedded_module(module_name) {
+        let path = PathBuf::from("modules").join(path?);
+        read_embedded_module(&path)
+    } else {
+        let buf = fs::read(path.unwrap());
+        tsx_to_js_vec(
+            Some(module_name),
+            &String::from_utf8(buf.unwrap()).unwrap(),
+            &OutputType::ESModule,
+        )
+        .map_err(|e| Error::new(ErrorKind::Other, e))
+    }
 }
 
 fn is_embedded_module(module_name_or_path: &str) -> bool {
@@ -52,7 +74,7 @@ fn is_embedded_module(module_name_or_path: &str) -> bool {
         .any(|name| module_name_or_path == *name || resolved == *name)
 }
 
-fn read_embedded_module(path: &std::path::PathBuf) -> Result<Vec<u8>, std::io::Error> {
+fn read_embedded_module(path: &PathBuf) -> Result<Vec<u8>, Error> {
     let file_name = path.to_str().unwrap();
     let file_bytes = GzDecoder::new(&EMBEDDED_MODULES[..]);
     let mut archive = Archive::new(file_bytes);
@@ -65,8 +87,8 @@ fn read_embedded_module(path: &std::path::PathBuf) -> Result<Vec<u8>, std::io::E
             return Ok(content);
         }
     }
-    Err(std::io::Error::new(
-        std::io::ErrorKind::NotFound,
+    Err(Error::new(
+        ErrorKind::NotFound,
         format!("could not load embedded module: {}", path.to_str().unwrap()),
     ))
 }

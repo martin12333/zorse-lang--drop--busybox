@@ -3,6 +3,7 @@ mod macros;
 pub mod js_class;
 pub mod js_module;
 pub mod resolver;
+pub mod transpiler;
 
 use std::collections::HashMap;
 
@@ -87,12 +88,23 @@ unsafe extern "C" fn module_loader(
     }
     let module_name = module_name.unwrap();
 
-    let code = resolver::require(module_name);
+    let code = resolver::import(module_name);
 
-    if code.is_none() {
+    if code.is_err() {
         JS_ThrowReferenceError(
             ctx,
             "could not load module filename '%s'\0".as_ptr().cast(),
+            module_name_,
+        );
+        return std::ptr::null_mut();
+    }
+
+    let code = String::from_utf8(code.unwrap());
+
+    if code.is_err() {
+        JS_ThrowReferenceError(
+            ctx,
+            "failed to read file as valid utf8 '%s'\0".as_ptr().cast(),
             module_name_,
         );
         return std::ptr::null_mut();
@@ -315,6 +327,7 @@ impl Context {
         super::internal_module::os::init_module(&mut ctx);
         super::internal_module::fs::init_module(&mut ctx);
         super::internal_module::tty::init_module(&mut ctx);
+        super::internal_module::sys::init_module(&mut ctx);
 
         ctx
     }
