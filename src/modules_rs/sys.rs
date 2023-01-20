@@ -38,12 +38,15 @@ struct SYS;
 
 impl ModuleInit for SYS {
     fn init_module(ctx: &mut Context, m: &mut JsModuleDef) {
-        crate::add_function_export!(ctx, m, resolve);
-        crate::add_function_export!(ctx, m, require);
-        crate::add_function_export!(ctx, m, import);
+        let f = ctx.wrap_function("resolve", resolve);
+        m.add_export("resolve\0", f.into());
+        let f = ctx.wrap_function("require", require);
+        m.add_export("require\0", f.into());
+        let f = ctx.wrap_function("import", import);
+        m.add_export("import\0", f.into());
     }
 }
 
 pub fn init_module(ctx: &mut Context) {
-    crate::register_rs_module!("_drop:sys", ctx, SYS, [resolve, require, import]);
+    ctx.register_module("_drop:sys\0", SYS, &["resolve\0", "require\0", "import\0"])
 }

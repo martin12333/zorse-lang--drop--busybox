@@ -15,7 +15,7 @@ const createConfig = (name) => {
       outputModule: true,
     },
     output: {
-      path: path.resolve("modules"),
+      path: path.resolve("src/modules_js"),
       filename: `${name}.js`,
       library: {
         type: "module",

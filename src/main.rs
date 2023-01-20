@@ -36,6 +36,15 @@ fn main() {
             .expect(format!("invalid format: {}", &file_path).as_str());
         rest_arg.insert(0, file_path.clone());
         ctx.put_args(rest_arg);
+        ctx.js_loop().unwrap();
+        let make_require_global = r#"
+        ;(async () => {
+            const { require } = await import("commonjs");
+            globalThis.require = require;
+        })();
+        "#;
+        ctx.eval_global_str(make_require_global.to_owned());
+        ctx.promise_loop_poll();
         ctx.eval_module_str(code, &file_path);
         ctx.js_loop().unwrap();
     });
