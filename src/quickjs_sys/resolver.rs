@@ -1,5 +1,3 @@
-mod embedded_modules;
-
 use crate::transpiler::{tsx_to_js_str, tsx_to_js_vec, OutputType};
 use flate2::bufread::GzDecoder;
 use lazy_static::lazy_static;
@@ -11,6 +9,21 @@ use tar::Archive;
 
 lazy_static! {
     static ref EMBEDDED_MODULES: &'static [u8] = include_bytes!("../../modules.tar.gz");
+    static ref EMBEDDED_MODULES_LIST: Vec<String> = {
+        let file_bytes = GzDecoder::new(&EMBEDDED_MODULES[..]);
+        let mut archive = Archive::new(file_bytes);
+        let mut file_list = Vec::new();
+        for file in archive.entries().unwrap() {
+            let file = file.unwrap();
+            let path = file.path().unwrap();
+            let path = path.strip_prefix("modules").unwrap().to_str().unwrap();
+            file_list.push(path.to_string());
+            if !path.contains("/") {
+                file_list.push(path.replace(".js", ""));
+            };
+        }
+        file_list
+    };
 }
 
 pub fn resolve(module_name: &str) -> Result<String, Error> {
@@ -69,7 +82,7 @@ pub fn import(module_name: &str) -> Result<Vec<u8>, Error> {
 
 fn is_embedded_module(module_name_or_path: &str) -> bool {
     let resolved = resolve(module_name_or_path).unwrap_or("".to_string());
-    embedded_modules::EMBEDDED_MODULES
+    EMBEDDED_MODULES_LIST
         .iter()
         .any(|name| module_name_or_path == *name || resolved == *name)
 }

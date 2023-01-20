@@ -321,13 +321,13 @@ impl Context {
 
         js_init_dirname(&mut ctx);
 
-        super::internal_module::core::init_global_function(&mut ctx);
-        super::internal_module::core::init_ext_function(&mut ctx);
-        super::internal_module::encoding::init_encoding_module(&mut ctx);
-        super::internal_module::os::init_module(&mut ctx);
-        super::internal_module::fs::init_module(&mut ctx);
-        super::internal_module::tty::init_module(&mut ctx);
-        super::internal_module::sys::init_module(&mut ctx);
+        super::modules_rs::core::init_global_function(&mut ctx);
+        super::modules_rs::core::init_ext_function(&mut ctx);
+        super::modules_rs::encoding::init_encoding_module(&mut ctx);
+        super::modules_rs::os::init_module(&mut ctx);
+        super::modules_rs::fs::init_module(&mut ctx);
+        super::modules_rs::tty::init_module(&mut ctx);
+        super::modules_rs::sys::init_module(&mut ctx);
 
         ctx
     }

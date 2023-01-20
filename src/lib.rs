@@ -3,7 +3,7 @@
 extern crate lazy_static;
 
 mod event_loop;
-mod internal_module;
+mod modules_rs;
 pub mod quickjs_sys;
 
 pub use event_loop::EventLoop;

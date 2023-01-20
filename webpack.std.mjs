@@ -8,7 +8,7 @@ const createConfig = (name) => {
   /** @type {webpack.Configuration} */
   const cryptoConfig = {
     mode: "production",
-    entry: `./std/${name}.js`,
+    entry: `./src/modules_js/${name}.js.in`,
     devtool: false,
     target: "web",
     experiments: {
@@ -69,7 +69,7 @@ const createConfig = (name) => {
       }),
     ],
     resolve: {
-      extensions: [".js"],
+      extensions: [".js", ".js.in"],
       fallback: {
         "safer-buffer": "buffer",
         "safe-buffer": "buffer",

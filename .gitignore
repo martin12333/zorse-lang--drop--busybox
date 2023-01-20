@@ -31,22 +31,25 @@
 *.out
 *.app
 
-# CMake
-build
-out
+# GitKraken
+/logs
 
-# Node
+# CMake
+/build
+/out
+
+# NPM
 node_modules
 
 # Webpack
-dist
+/dist
 *.d.ts
+/src/modules_js/crypto.js
+/src/modules_js/memfs.js
+/src/modules_js/zlib.js
 
 # Cargo
 /target
 /modules.tar.gz
-/modules/crypto.js
-/modules/memfs.js
-/modules/zlib.js
 !lib/*.a
 embedded_modules.rs

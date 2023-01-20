@@ -45,5 +45,5 @@ impl ModuleInit for SYS {
 }
 
 pub fn init_module(ctx: &mut Context) {
-    crate::register_internal_module!("_drop:sys", ctx, SYS, [resolve, require, import]);
+    crate::register_rs_module!("_drop:sys", ctx, SYS, [resolve, require, import]);
 }
