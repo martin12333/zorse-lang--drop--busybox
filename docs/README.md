@@ -32,7 +32,7 @@ Drop ABI variation
 
 #### Defined in
 
-[index.ts:10](https://github.com/zorse-lang/drop/blob/12551aa/src/npm/index.ts#L10)
+[index.ts:10](https://github.com/zorse-lang/drop/blob/eff7e9e/src/npm/index.ts#L10)
 
 ___
 
@@ -44,7 +44,7 @@ All available commands
 
 #### Defined in
 
-[index.ts:140](https://github.com/zorse-lang/drop/blob/12551aa/src/npm/index.ts#L140)
+[index.ts:140](https://github.com/zorse-lang/drop/blob/eff7e9e/src/npm/index.ts#L140)
 
 ## Functions
 
@@ -52,7 +52,7 @@ All available commands
 
 ▸ **exec**(`cmd`, `...args`): [`Promise`]( https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise )<`void`\>
 
-Convenience function to run an either a "dropbox" or "busybox" command
+Convenience function to run an either a Drop or BusyBox command
 
 **`Example`**
 
@@ -81,7 +81,7 @@ Runner to execute the command
 
 #### Defined in
 
-[index.ts:208](https://github.com/zorse-lang/drop/blob/12551aa/src/npm/index.ts#L208)
+[index.ts:208](https://github.com/zorse-lang/drop/blob/eff7e9e/src/npm/index.ts#L208)
 
 ___
 
@@ -89,7 +89,7 @@ ___
 
 ▸ **runBusy**(`opts`): [`Promise`]( https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise )<[`Runner`](interfaces/Runner.md)\>
 
-Run a "busybox" command (POSIX subset emulation)
+Run a BusyBox command (POSIX subset emulation)
 
 **`Example`**
 
@@ -119,7 +119,7 @@ Runner to execute the command
 
 #### Defined in
 
-[index.ts:106](https://github.com/zorse-lang/drop/blob/12551aa/src/npm/index.ts#L106)
+[index.ts:106](https://github.com/zorse-lang/drop/blob/eff7e9e/src/npm/index.ts#L106)
 
 ___
 
@@ -127,7 +127,7 @@ ___
 
 ▸ **runDrop**(`opts`): [`Promise`]( https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise )<[`Runner`](interfaces/Runner.md)\>
 
-Run a "dropbox" command (NodeJS subset emulation)
+Run a Drop command (NodeJS subset emulation)
 
 **`Example`**
 
@@ -150,4 +150,4 @@ Runner to execute the command
 
 #### Defined in
 
-[index.ts:63](https://github.com/zorse-lang/drop/blob/12551aa/src/npm/index.ts#L63)
+[index.ts:63](https://github.com/zorse-lang/drop/blob/eff7e9e/src/npm/index.ts#L63)

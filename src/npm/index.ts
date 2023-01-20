@@ -33,7 +33,7 @@ export interface RunOptions {
 	readonly variant?: ABIVariant;
 }
 
-/** Options to run a "dropbox" command (NodeJS subset emulation) */
+/** Options to run a Drop command (NodeJS subset emulation) */
 export interface DropRunOptions extends RunOptions {
 	/** File to run, can be .[cm]js, .[cm]ts, or .[cm]tsx */
 	readonly file: string;
@@ -51,7 +51,7 @@ function decode(encoded: string) {
 }
 
 /**
- * Run a "dropbox" command (NodeJS subset emulation)
+ * Run a Drop command (NodeJS subset emulation)
  * @param opts Options to run the command
  * @returns Runner to execute the command
  * @example
@@ -83,13 +83,13 @@ export async function runDrop(opts: DropRunOptions): Promise<Runner> {
 	};
 }
 
-/** Options to run a "busybox" command (POSIX subset emulation) */
+/** Options to run a BusyBox command (POSIX subset emulation) */
 export interface BusyBoxRunOptions extends RunOptions {
 	readonly Module?: {};
 }
 
 /**
- * Run a "busybox" command (POSIX subset emulation)
+ * Run a BusyBox command (POSIX subset emulation)
  * @param opts Options to run the command
  * @returns Runner to execute the command
  * @example
@@ -192,7 +192,7 @@ export type ExecCommand =
 	| "busybox";
 
 /**
- * Convenience function to run an either a "dropbox" or "busybox" command
+ * Convenience function to run an either a Drop or BusyBox command
  * @param cmd Command to run
  * @param args Arguments to pass to the command
  * @returns Runner to execute the command

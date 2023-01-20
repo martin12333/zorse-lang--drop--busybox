@@ -1,6 +1,6 @@
 # drop
 
-<em> :pushpin: NodeJS and POSIX Emulation in WASI :pushpin: </em>
+<center> :pushpin: NodeJS + POSIX Emulation in WASI and WASM :pushpin: </center>
 
 Drop is a small toolbox of common tools in WebAssembly to provide a POSIX-like
 environment independent of the host system and platform capabilities.
@@ -30,9 +30,9 @@ API Documentation: [`docs`](docs/README.md#table-of-contents)
 
 ## Goals
 
-- Not introducing any new concepts or APIs.
-- Runtime staying entirely in WebAssembly and WASI and be portable.
-- Being as transparent for end user code as possible by emulating NodeJS APIs.
+- Isomorphism: Supporting browsers, NodeJS, and other future platforms.
+- Portability: Staying entirely in WebAssembly and WASI for max portability.
+- Compatibility: Not introducing any new concepts. Faithfulness to NodeJS APIs.
 
 ## Features
 

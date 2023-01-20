@@ -29,7 +29,7 @@ Command line arguments
 
 #### Defined in
 
-[index.ts:31](https://github.com/zorse-lang/drop/blob/12551aa/src/npm/index.ts#L31)
+[index.ts:31](https://github.com/zorse-lang/drop/blob/eff7e9e/src/npm/index.ts#L31)
 
 ___
 
@@ -41,4 +41,4 @@ ABI variant to use
 
 #### Defined in
 
-[index.ts:33](https://github.com/zorse-lang/drop/blob/12551aa/src/npm/index.ts#L33)
+[index.ts:33](https://github.com/zorse-lang/drop/blob/eff7e9e/src/npm/index.ts#L33)

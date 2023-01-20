@@ -1,8 +1,8 @@
 {
   "name": "@zorse/drop",
-  "version": "3.1.0",
+  "version": "3.2.0",
   "private": false,
-  "description": "'drop' is a small toolbox of common tools in WebAssembly to provide a POSIX-like environment independent of the host system and platform capabilities.",
+  "description": "NodeJS + POSIX Emulation in WASI and WASM",
   "main": "./dist/index.js",
   "bin": "./dist/bin.js",
   "types": "./dist/index.d.ts",
