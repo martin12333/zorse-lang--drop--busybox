@@ -2,7 +2,7 @@ import TerserPlugin from "terser-webpack-plugin";
 import path from "path";
 import webpack from "webpack";
 
-const ALL_PACKAGES = ["crypto", "memfs", "zlib"];
+const ALL_PACKAGES = ["crypto", "memfs", "zlib", "uvu", "chai"];
 
 const createConfig = (name) => {
 	/** @type {webpack.Configuration} */
@@ -63,6 +63,7 @@ const createConfig = (name) => {
 			],
 		},
 		plugins: [
+			new webpack.ProgressPlugin(),
 			new webpack.ProvidePlugin({
 				Buffer: ["buffer", "Buffer"],
 				process: "process",

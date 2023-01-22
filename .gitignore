@@ -47,6 +47,8 @@ node_modules
 /src/modules_js/crypto.js
 /src/modules_js/memfs.js
 /src/modules_js/zlib.js
+/src/modules_js/chai.js
+/src/modules_js/uvu.js
 
 # Cargo
 /target

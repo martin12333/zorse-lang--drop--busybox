@@ -2,12 +2,12 @@
   "compilerOptions": {
     "resolveJsonModule": true,
     "declaration": true,
-    "moduleResolution": "Node",
+    "moduleResolution": "NodeNext",
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
     "noImplicitAny": true,
     "module": "ESNext",
-    "target": "es6",
+    "target": "ESNext",
     "allowJs": true,
     "baseUrl": "."
   },

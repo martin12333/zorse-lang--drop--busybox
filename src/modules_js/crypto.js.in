@@ -1,2 +1,2 @@
-import * as crypto from "crypto-browserify";
+export * as crypto from "crypto-browserify";
 export default crypto;

@@ -1,2 +1,1 @@
-import * as memfs from "memfs";
-export default memfs;
+export * from "memfs";

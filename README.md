@@ -48,7 +48,7 @@ Drop currently offers the embedded features in WebAssembly:
 - Following NodeJS modules:
   - `assert` • `buffer`: • `crypto`: • `events`: • `fs` • `memfs` • `os` • `url`
   • `path` • `process` • `punycode` • `querystring` • `readline` • `stream`
-  • `string_decoder` • `timers` • `tty` • `util` • `zlib` • `test`
+  • `string_decoder` • `timers` • `tty` • `util` • `zlib` • `uvu` • `chai`
 - Following tools through `busybox`:
   - `base64` • `basename` • `cat` • `chmod` • `chown` • `clear` • `cp` • `date`
   • `diff` • `echo` • `egrep` • `env` • `false` • `fgrep` • `find` • `grep`
