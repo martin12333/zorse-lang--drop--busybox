@@ -21,11 +21,7 @@ import { Buffer } from "buffer";
 const { custom: customPromisify } = promisify;
 
 function _uint8ArrayToBuffer(chunk) {
-    return Buffer.from(
-        chunk.buffer,
-        chunk.byteOffset,
-        chunk.byteLength,
-    );
+	return Buffer.from(chunk.buffer, chunk.byteOffset, chunk.byteLength);
 }
 
 Stream.isDisturbed = isDisturbed;
@@ -41,25 +37,25 @@ Stream.destroy = destroyer;
 Stream.compose = compose;
 
 Object.defineProperty(Stream, "promises", {
-    configurable: true,
-    enumerable: true,
-    get() {
-        return promises;
-    },
+	configurable: true,
+	enumerable: true,
+	get() {
+		return promises;
+	},
 });
 
 Object.defineProperty(pipeline, customPromisify, {
-    enumerable: true,
-    get() {
-        return promises.pipeline;
-    },
+	enumerable: true,
+	get() {
+		return promises.pipeline;
+	},
 });
 
 Object.defineProperty(eos, customPromisify, {
-    enumerable: true,
-    get() {
-        return promises.finished;
-    },
+	enumerable: true,
+	get() {
+		return promises.finished;
+	},
 });
 
 // Backwards-compat with node 0.4.x
@@ -69,18 +65,18 @@ Stream._uint8ArrayToBuffer = _uint8ArrayToBuffer;
 
 export default Stream;
 export {
-    _uint8ArrayToBuffer,
-    addAbortSignal,
-    compose,
-    destroyer as destroy,
-    Duplex,
-    eos as finished,
-    isDisturbed,
-    isUint8Array as _isUint8Array,
-    PassThrough,
-    pipeline,
-    Readable,
-    Stream,
-    Transform,
-    Writable,
+	_uint8ArrayToBuffer,
+	addAbortSignal,
+	compose,
+	destroyer as destroy,
+	Duplex,
+	eos as finished,
+	isDisturbed,
+	isUint8Array as _isUint8Array,
+	PassThrough,
+	pipeline,
+	Readable,
+	Stream,
+	Transform,
+	Writable,
 };

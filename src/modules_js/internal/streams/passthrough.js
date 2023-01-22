@@ -5,18 +5,18 @@
 import Transform from "./transform.js";
 
 function PassThrough(options) {
-    if (!(this instanceof PassThrough)) {
-        return new PassThrough(options);
-    }
+	if (!(this instanceof PassThrough)) {
+		return new PassThrough(options);
+	}
 
-    Transform.call(this, options);
+	Transform.call(this, options);
 }
 
 Object.setPrototypeOf(PassThrough.prototype, Transform.prototype);
 Object.setPrototypeOf(PassThrough, Transform);
 
 PassThrough.prototype._transform = function (chunk, encoding, cb) {
-    cb(null, chunk);
+	cb(null, chunk);
 };
 
 export default PassThrough;

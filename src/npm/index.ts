@@ -68,9 +68,7 @@ export async function runDrop(opts: DropRunOptions): Promise<Runner> {
 		env: process.env,
 	};
 	const wasi =
-		variant === "node"
-			? new NodeWASI({ returnOnExit: true, ...sharedOpts })
-			: new WASI({ bindings, ...sharedOpts });
+		variant === "node" ? new NodeWASI({ returnOnExit: true, ...sharedOpts }) : new WASI({ bindings, ...sharedOpts });
 	const importObject = { wasi_snapshot_preview1: wasi.wasiImport };
 	const buffer = opts.buffer || decode(DROP_WASM_BASE64);
 	const wasm = await WebAssembly.compile(buffer);

@@ -1,4 +1,4 @@
 module.exports = {
-  hello: "world!",
-  commonjs: "works 💪",
+	hello: "world!",
+	commonjs: "works 💪",
 };

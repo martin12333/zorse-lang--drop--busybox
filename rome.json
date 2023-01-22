@@ -1,0 +1,21 @@
+{
+  "formatter": {
+    "enabled": true,
+    "indentStyle": "tab",
+    "lineWidth": 120
+  },
+  "files": {
+    "maxSize": 20971520
+  },
+  "linter": {
+    "rules": {
+      "style": {
+        "useTemplate": "off",
+        "noUnusedTemplateLiteral": "off"
+      },
+      "suspicious": {
+        "noShadowRestrictedNames": "off"
+      }
+    }
+  }
+}

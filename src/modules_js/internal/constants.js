@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 const isWindows = false;
 
@@ -45,4 +45,4 @@ export const CHAR_AMPERSAND = 38;
 export const CHAR_EQUAL = 61;
 export const CHAR_0 = 48;
 export const CHAR_9 = 57;
-export const EOL = isWindows ? '\r\n' : '\n';
+export const EOL = isWindows ? "\r\n" : "\n";

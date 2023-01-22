@@ -19,21 +19,21 @@
 // OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
 // USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-'use strict';
+"use strict";
 
-import { clearLine, clearScreenDown, cursorTo, moveCursor } from './internal/readline/callbacks';
+import { clearLine, clearScreenDown, cursorTo, moveCursor } from "./internal/readline/callbacks";
 
-import { emitKeypressEvents } from './internal/readline/emitKeypressEvents';
+import { emitKeypressEvents } from "./internal/readline/emitKeypressEvents";
 
-import promises from 'readline/promises';
+import promises from "readline/promises";
 
-import { AbortError } from './internal/errors';
+import { AbortError } from "./internal/errors";
 
-import { inspect } from './internal/util/inspect';
+import { inspect } from "./internal/util/inspect";
 
-import { kEmptyObject, promisify } from './internal/util';
+import { kEmptyObject, promisify } from "./internal/util";
 
-import { validateAbortSignal } from './internal/validators';
+import { validateAbortSignal } from "./internal/validators";
 
 /**
  * @typedef {import('./stream.js').Readable} Readable
@@ -41,62 +41,60 @@ import { validateAbortSignal } from './internal/validators';
  */
 
 const {
-  Interface: _Interface,
-  InterfaceConstructor,
-  kAddHistory,
-  kDecoder,
-  kDeleteLeft,
-  kDeleteLineLeft,
-  kDeleteLineRight,
-  kDeleteRight,
-  kDeleteWordLeft,
-  kDeleteWordRight,
-  kGetDisplayPos,
-  kHistoryNext,
-  kHistoryPrev,
-  kInsertString,
-  kLine,
-  kLine_buffer,
-  kMoveCursor,
-  kNormalWrite,
-  kOldPrompt,
-  kOnLine,
-  kPreviousKey,
-  kPrompt,
-  kQuestionCallback,
-  kQuestionCancel,
-  kRefreshLine,
-  kSawKeyPress,
-  kSawReturnAt,
-  kSetRawMode,
-  kTabComplete,
-  kTabCompleter,
-  kTtyWrite,
-  kWordLeft,
-  kWordRight,
-  kWriteToOutput,
-} = require('internal/readline/interface');
+	Interface: _Interface,
+	InterfaceConstructor,
+	kAddHistory,
+	kDecoder,
+	kDeleteLeft,
+	kDeleteLineLeft,
+	kDeleteLineRight,
+	kDeleteRight,
+	kDeleteWordLeft,
+	kDeleteWordRight,
+	kGetDisplayPos,
+	kHistoryNext,
+	kHistoryPrev,
+	kInsertString,
+	kLine,
+	kLine_buffer,
+	kMoveCursor,
+	kNormalWrite,
+	kOldPrompt,
+	kOnLine,
+	kPreviousKey,
+	kPrompt,
+	kQuestionCallback,
+	kQuestionCancel,
+	kRefreshLine,
+	kSawKeyPress,
+	kSawReturnAt,
+	kSetRawMode,
+	kTabComplete,
+	kTabCompleter,
+	kTtyWrite,
+	kWordLeft,
+	kWordRight,
+	kWriteToOutput,
+} = require("internal/readline/interface");
 
 function Interface(input, output, completer, terminal) {
-  if (!(this instanceof Interface)) {
-    return new Interface(input, output, completer, terminal);
-  }
+	if (!(this instanceof Interface)) {
+		return new Interface(input, output, completer, terminal);
+	}
 
-  if (input?.input &&
-    typeof input.completer === 'function' && input.completer.length !== 2) {
-    const { completer } = input;
-    input.completer = (v, cb) => cb(null, completer(v));
-  } else if (typeof completer === 'function' && completer.length !== 2) {
-    const realCompleter = completer;
-    completer = (v, cb) => cb(null, realCompleter(v));
-  }
+	if (input?.input && typeof input.completer === "function" && input.completer.length !== 2) {
+		const { completer } = input;
+		input.completer = (v, cb) => cb(null, completer(v));
+	} else if (typeof completer === "function" && completer.length !== 2) {
+		const realCompleter = completer;
+		completer = (v, cb) => cb(null, realCompleter(v));
+	}
 
-  Function.prototype.call.call(InterfaceConstructor, this,
-    input, output, completer, terminal);
+	Function.prototype.call.call(InterfaceConstructor, this, input, output, completer, terminal);
 
-  if (process.env.TERM === 'dumb') {
-    this._ttyWrite = Function.prototype.bind.call(_ttyWriteDumb, this);
-  }
+	if (process.env.TERM === "dumb") {
+		this._ttyWrite = Function.prototype.bind.call(_ttyWriteDumb, this);
+	}
 }
 
 Object.setPrototypeOf(Interface.prototype, _Interface.prototype);
@@ -112,61 +110,63 @@ const superQuestion = _Interface.prototype.question;
  * @returns {void}
  */
 Interface.prototype.question = function (query, options, cb) {
-  cb = typeof options === 'function' ? options : cb;
-  if (options === null || typeof options !== 'object') {
-    options = kEmptyObject;
-  }
+	cb = typeof options === "function" ? options : cb;
+	if (options === null || typeof options !== "object") {
+		options = kEmptyObject;
+	}
 
-  if (options.signal) {
-    validateAbortSignal(options.signal, 'options.signal');
-    if (options.signal.aborted) {
-      return;
-    }
+	if (options.signal) {
+		validateAbortSignal(options.signal, "options.signal");
+		if (options.signal.aborted) {
+			return;
+		}
 
-    const onAbort = () => {
-      this[kQuestionCancel]();
-    };
-    options.signal.addEventListener('abort', onAbort, { once: true });
-    const cleanup = () => {
-      options.signal.removeEventListener(onAbort);
-    };
-    const originalCb = cb;
-    cb = typeof cb === 'function' ? (answer) => {
-      cleanup();
-      return originalCb(answer);
-    } : cleanup;
-  }
+		const onAbort = () => {
+			this[kQuestionCancel]();
+		};
+		options.signal.addEventListener("abort", onAbort, { once: true });
+		const cleanup = () => {
+			options.signal.removeEventListener(onAbort);
+		};
+		const originalCb = cb;
+		cb =
+			typeof cb === "function"
+				? (answer) => {
+						cleanup();
+						return originalCb(answer);
+				  }
+				: cleanup;
+	}
 
-  if (typeof cb === 'function') {
-    Function.prototype.call.call(superQuestion, this, query, cb);
-  }
+	if (typeof cb === "function") {
+		Function.prototype.call.call(superQuestion, this, query, cb);
+	}
 };
 Interface.prototype.question[promisify.custom] = function question(query, options) {
-  if (options === null || typeof options !== 'object') {
-    options = kEmptyObject;
-  }
+	if (options === null || typeof options !== "object") {
+		options = kEmptyObject;
+	}
 
-  if (options.signal && options.signal.aborted) {
-    return Promise.reject(
-      new AbortError(undefined, { cause: options.signal.reason }));
-  }
+	if (options.signal && options.signal.aborted) {
+		return Promise.reject(new AbortError(undefined, { cause: options.signal.reason }));
+	}
 
-  return new Promise((resolve, reject) => {
-    let cb = resolve;
+	return new Promise((resolve, reject) => {
+		let cb = resolve;
 
-    if (options.signal) {
-      const onAbort = () => {
-        reject(new AbortError(undefined, { cause: options.signal.reason }));
-      };
-      options.signal.addEventListener('abort', onAbort, { once: true });
-      cb = (answer) => {
-        options.signal.removeEventListener('abort', onAbort);
-        resolve(answer);
-      };
-    }
+		if (options.signal) {
+			const onAbort = () => {
+				reject(new AbortError(undefined, { cause: options.signal.reason }));
+			};
+			options.signal.addEventListener("abort", onAbort, { once: true });
+			cb = (answer) => {
+				options.signal.removeEventListener("abort", onAbort);
+				resolve(answer);
+			};
+		}
 
-    this.question(query, options, cb);
-  });
+		this.question(query, options, cb);
+	});
 };
 
 /**
@@ -191,219 +191,219 @@ Interface.prototype.question[promisify.custom] = function question(query, option
  * @returns {Interface}
  */
 function createInterface(input, output, completer, terminal) {
-  return new Interface(input, output, completer, terminal);
+	return new Interface(input, output, completer, terminal);
 }
 
 Object.defineProperties(Interface.prototype, {
-  // Redirect internal prototype methods to the underscore notation for backward
-  // compatibility.
-  [kSetRawMode]: {
-    __proto__: null,
-    get() {
-      return this._setRawMode;
-    }
-  },
-  [kOnLine]: {
-    __proto__: null,
-    get() {
-      return this._onLine;
-    }
-  },
-  [kWriteToOutput]: {
-    __proto__: null,
-    get() {
-      return this._writeToOutput;
-    }
-  },
-  [kAddHistory]: {
-    __proto__: null,
-    get() {
-      return this._addHistory;
-    }
-  },
-  [kRefreshLine]: {
-    __proto__: null,
-    get() {
-      return this._refreshLine;
-    }
-  },
-  [kNormalWrite]: {
-    __proto__: null,
-    get() {
-      return this._normalWrite;
-    }
-  },
-  [kInsertString]: {
-    __proto__: null,
-    get() {
-      return this._insertString;
-    }
-  },
-  [kTabComplete]: {
-    __proto__: null,
-    get() {
-      return this._tabComplete;
-    }
-  },
-  [kWordLeft]: {
-    __proto__: null,
-    get() {
-      return this._wordLeft;
-    }
-  },
-  [kWordRight]: {
-    __proto__: null,
-    get() {
-      return this._wordRight;
-    }
-  },
-  [kDeleteLeft]: {
-    __proto__: null,
-    get() {
-      return this._deleteLeft;
-    }
-  },
-  [kDeleteRight]: {
-    __proto__: null,
-    get() {
-      return this._deleteRight;
-    }
-  },
-  [kDeleteWordLeft]: {
-    __proto__: null,
-    get() {
-      return this._deleteWordLeft;
-    }
-  },
-  [kDeleteWordRight]: {
-    __proto__: null,
-    get() {
-      return this._deleteWordRight;
-    }
-  },
-  [kDeleteLineLeft]: {
-    __proto__: null,
-    get() {
-      return this._deleteLineLeft;
-    }
-  },
-  [kDeleteLineRight]: {
-    __proto__: null,
-    get() {
-      return this._deleteLineRight;
-    }
-  },
-  [kLine]: {
-    __proto__: null,
-    get() {
-      return this._line;
-    }
-  },
-  [kHistoryNext]: {
-    __proto__: null,
-    get() {
-      return this._historyNext;
-    }
-  },
-  [kHistoryPrev]: {
-    __proto__: null,
-    get() {
-      return this._historyPrev;
-    }
-  },
-  [kGetDisplayPos]: {
-    __proto__: null,
-    get() {
-      return this._getDisplayPos;
-    }
-  },
-  [kMoveCursor]: {
-    __proto__: null,
-    get() {
-      return this._moveCursor;
-    }
-  },
-  [kTtyWrite]: {
-    __proto__: null,
-    get() {
-      return this._ttyWrite;
-    }
-  },
+	// Redirect internal prototype methods to the underscore notation for backward
+	// compatibility.
+	[kSetRawMode]: {
+		__proto__: null,
+		get() {
+			return this._setRawMode;
+		},
+	},
+	[kOnLine]: {
+		__proto__: null,
+		get() {
+			return this._onLine;
+		},
+	},
+	[kWriteToOutput]: {
+		__proto__: null,
+		get() {
+			return this._writeToOutput;
+		},
+	},
+	[kAddHistory]: {
+		__proto__: null,
+		get() {
+			return this._addHistory;
+		},
+	},
+	[kRefreshLine]: {
+		__proto__: null,
+		get() {
+			return this._refreshLine;
+		},
+	},
+	[kNormalWrite]: {
+		__proto__: null,
+		get() {
+			return this._normalWrite;
+		},
+	},
+	[kInsertString]: {
+		__proto__: null,
+		get() {
+			return this._insertString;
+		},
+	},
+	[kTabComplete]: {
+		__proto__: null,
+		get() {
+			return this._tabComplete;
+		},
+	},
+	[kWordLeft]: {
+		__proto__: null,
+		get() {
+			return this._wordLeft;
+		},
+	},
+	[kWordRight]: {
+		__proto__: null,
+		get() {
+			return this._wordRight;
+		},
+	},
+	[kDeleteLeft]: {
+		__proto__: null,
+		get() {
+			return this._deleteLeft;
+		},
+	},
+	[kDeleteRight]: {
+		__proto__: null,
+		get() {
+			return this._deleteRight;
+		},
+	},
+	[kDeleteWordLeft]: {
+		__proto__: null,
+		get() {
+			return this._deleteWordLeft;
+		},
+	},
+	[kDeleteWordRight]: {
+		__proto__: null,
+		get() {
+			return this._deleteWordRight;
+		},
+	},
+	[kDeleteLineLeft]: {
+		__proto__: null,
+		get() {
+			return this._deleteLineLeft;
+		},
+	},
+	[kDeleteLineRight]: {
+		__proto__: null,
+		get() {
+			return this._deleteLineRight;
+		},
+	},
+	[kLine]: {
+		__proto__: null,
+		get() {
+			return this._line;
+		},
+	},
+	[kHistoryNext]: {
+		__proto__: null,
+		get() {
+			return this._historyNext;
+		},
+	},
+	[kHistoryPrev]: {
+		__proto__: null,
+		get() {
+			return this._historyPrev;
+		},
+	},
+	[kGetDisplayPos]: {
+		__proto__: null,
+		get() {
+			return this._getDisplayPos;
+		},
+	},
+	[kMoveCursor]: {
+		__proto__: null,
+		get() {
+			return this._moveCursor;
+		},
+	},
+	[kTtyWrite]: {
+		__proto__: null,
+		get() {
+			return this._ttyWrite;
+		},
+	},
 
-  // Defining proxies for the internal instance properties for backward
-  // compatibility.
-  _decoder: {
-    __proto__: null,
-    get() {
-      return this[kDecoder];
-    },
-    set(value) {
-      this[kDecoder] = value;
-    },
-  },
-  _line_buffer: {
-    __proto__: null,
-    get() {
-      return this[kLine_buffer];
-    },
-    set(value) {
-      this[kLine_buffer] = value;
-    },
-  },
-  _oldPrompt: {
-    __proto__: null,
-    get() {
-      return this[kOldPrompt];
-    },
-    set(value) {
-      this[kOldPrompt] = value;
-    },
-  },
-  _previousKey: {
-    __proto__: null,
-    get() {
-      return this[kPreviousKey];
-    },
-    set(value) {
-      this[kPreviousKey] = value;
-    },
-  },
-  _prompt: {
-    __proto__: null,
-    get() {
-      return this[kPrompt];
-    },
-    set(value) {
-      this[kPrompt] = value;
-    },
-  },
-  _questionCallback: {
-    __proto__: null,
-    get() {
-      return this[kQuestionCallback];
-    },
-    set(value) {
-      this[kQuestionCallback] = value;
-    },
-  },
-  _sawKeyPress: {
-    __proto__: null,
-    get() {
-      return this[kSawKeyPress];
-    },
-    set(value) {
-      this[kSawKeyPress] = value;
-    },
-  },
-  _sawReturnAt: {
-    __proto__: null,
-    get() {
-      return this[kSawReturnAt];
-    },
-    set(value) {
-      this[kSawReturnAt] = value;
-    },
-  },
+	// Defining proxies for the internal instance properties for backward
+	// compatibility.
+	_decoder: {
+		__proto__: null,
+		get() {
+			return this[kDecoder];
+		},
+		set(value) {
+			this[kDecoder] = value;
+		},
+	},
+	_line_buffer: {
+		__proto__: null,
+		get() {
+			return this[kLine_buffer];
+		},
+		set(value) {
+			this[kLine_buffer] = value;
+		},
+	},
+	_oldPrompt: {
+		__proto__: null,
+		get() {
+			return this[kOldPrompt];
+		},
+		set(value) {
+			this[kOldPrompt] = value;
+		},
+	},
+	_previousKey: {
+		__proto__: null,
+		get() {
+			return this[kPreviousKey];
+		},
+		set(value) {
+			this[kPreviousKey] = value;
+		},
+	},
+	_prompt: {
+		__proto__: null,
+		get() {
+			return this[kPrompt];
+		},
+		set(value) {
+			this[kPrompt] = value;
+		},
+	},
+	_questionCallback: {
+		__proto__: null,
+		get() {
+			return this[kQuestionCallback];
+		},
+		set(value) {
+			this[kQuestionCallback] = value;
+		},
+	},
+	_sawKeyPress: {
+		__proto__: null,
+		get() {
+			return this[kSawKeyPress];
+		},
+		set(value) {
+			this[kSawKeyPress] = value;
+		},
+	},
+	_sawReturnAt: {
+		__proto__: null,
+		get() {
+			return this[kSawReturnAt];
+		},
+		set(value) {
+			this[kSawReturnAt] = value;
+		},
+	},
 });
 
 // Make internal methods public for backward compatibility.
@@ -415,20 +415,20 @@ Interface.prototype._refreshLine = _Interface.prototype[kRefreshLine];
 Interface.prototype._normalWrite = _Interface.prototype[kNormalWrite];
 Interface.prototype._insertString = _Interface.prototype[kInsertString];
 Interface.prototype._tabComplete = function (lastKeypressWasTab) {
-  // Overriding parent method because `this.completer` in the legacy
-  // implementation takes a callback instead of being an async function.
-  this.pause();
-  const string = String.prototype.slice.call(this.line, 0, this.cursor);
-  this.completer(string, (err, value) => {
-    this.resume();
+	// Overriding parent method because `this.completer` in the legacy
+	// implementation takes a callback instead of being an async function.
+	this.pause();
+	const string = String.prototype.slice.call(this.line, 0, this.cursor);
+	this.completer(string, (err, value) => {
+		this.resume();
 
-    if (err) {
-      this._writeToOutput(`Tab completion error: ${inspect(err)}`);
-      return;
-    }
+		if (err) {
+			this._writeToOutput(`Tab completion error: ${inspect(err)}`);
+			return;
+		}
 
-    this[kTabCompleter](lastKeypressWasTab, value);
-  });
+		this[kTabCompleter](lastKeypressWasTab, value);
+	});
 };
 Interface.prototype._wordLeft = _Interface.prototype[kWordLeft];
 Interface.prototype._wordRight = _Interface.prototype[kWordRight];
@@ -447,71 +447,60 @@ Interface.prototype._moveCursor = _Interface.prototype[kMoveCursor];
 Interface.prototype._ttyWrite = _Interface.prototype[kTtyWrite];
 
 function _ttyWriteDumb(s, key) {
-  key = key || kEmptyObject;
+	key = key || kEmptyObject;
 
-  if (key.name === 'escape') return;
+	if (key.name === "escape") return;
 
-  if (this[kSawReturnAt] && key.name !== 'enter')
-    this[kSawReturnAt] = 0;
+	if (this[kSawReturnAt] && key.name !== "enter") this[kSawReturnAt] = 0;
 
-  if (key.ctrl) {
-    if (key.name === 'c') {
-      if (this.listenerCount('SIGINT') > 0) {
-        this.emit('SIGINT');
-      } else {
-        // This readline instance is finished
-        this.close();
-      }
+	if (key.ctrl) {
+		if (key.name === "c") {
+			if (this.listenerCount("SIGINT") > 0) {
+				this.emit("SIGINT");
+			} else {
+				// This readline instance is finished
+				this.close();
+			}
 
-      return;
-    } else if (key.name === 'd') {
-      this.close();
-      return;
-    }
-  }
+			return;
+		} else if (key.name === "d") {
+			this.close();
+			return;
+		}
+	}
 
-  switch (key.name) {
-    case 'return':  // Carriage return, i.e. \r
-      this[kSawReturnAt] = DateNow();
-      this._line();
-      break;
+	switch (key.name) {
+		case "return": // Carriage return, i.e. \r
+			this[kSawReturnAt] = DateNow();
+			this._line();
+			break;
 
-    case 'enter':
-      // When key interval > crlfDelay
-      if (this[kSawReturnAt] === 0 ||
-        DateNow() - this[kSawReturnAt] > this.crlfDelay) {
-        this._line();
-      }
-      this[kSawReturnAt] = 0;
-      break;
+		case "enter":
+			// When key interval > crlfDelay
+			if (this[kSawReturnAt] === 0 || DateNow() - this[kSawReturnAt] > this.crlfDelay) {
+				this._line();
+			}
+			this[kSawReturnAt] = 0;
+			break;
 
-    default:
-      if (typeof s === 'string' && s) {
-        this.line += s;
-        this.cursor += s.length;
-        this._writeToOutput(s);
-      }
-  }
+		default:
+			if (typeof s === "string" && s) {
+				this.line += s;
+				this.cursor += s.length;
+				this._writeToOutput(s);
+			}
+	}
 }
 
-export {
-  Interface,
-  clearLine,
-  clearScreenDown,
-  createInterface,
-  cursorTo,
-  emitKeypressEvents,
-  moveCursor,
-  promises,
-};
+export { Interface, clearLine, clearScreenDown, createInterface, cursorTo, emitKeypressEvents, moveCursor, promises };
 
 export default {
-  Interface,
-  clearLine,
-  clearScreenDown,
-  createInterface,
-  cursorTo,
-  emitKeypressEvents,
-  moveCursor,
-  promises,
+	Interface,
+	clearLine,
+	clearScreenDown,
+	createInterface,
+	cursorTo,
+	emitKeypressEvents,
+	moveCursor,
+	promises,
 };

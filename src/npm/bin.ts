@@ -14,10 +14,7 @@ function hasWasiImport() {
 	}
 }
 function hasPreserveSymlinks() {
-	return (
-		process.execArgv.includes("--preserve-symlinks") &&
-		process.execArgv.includes("--preserve-symlinks-main")
-	);
+	return process.execArgv.includes("--preserve-symlinks") && process.execArgv.includes("--preserve-symlinks-main");
 }
 function hasMinimumNode16Version() {
 	return (
@@ -56,9 +53,7 @@ function restart() {
 function start() {
 	const libPath = dirname(realpathSync(__filename));
 	// @ts-expect-error index is compiled separately
-	const { exec } = __non_webpack_require__(
-		join(libPath, "index.js"),
-	) as typeof import("./index");
+	const { exec } = __non_webpack_require__(join(libPath, "index.js")) as typeof import("./index");
 	const nonCommands = [__filename, process.execPath];
 	const allArgs = process.argv.filter((arg) => !nonCommands.includes(arg));
 	if (allArgs.length === 0) {

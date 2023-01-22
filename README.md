@@ -1,6 +1,8 @@
 # drop
 
-<center> :pushpin: NodeJS + POSIX Emulation in WASI and WASM :pushpin: </center>
+<p align="center">
+:pushpin: NodeJS + POSIX Emulation in WASI and WASM :pushpin:
+</p>
 
 Drop is a small toolbox of common tools in WebAssembly to provide a POSIX-like
 environment independent of the host system and platform capabilities.
@@ -30,9 +32,9 @@ API Documentation: [`docs`](docs/README.md#table-of-contents)
 
 ## Goals
 
-- Isomorphism: Supporting browsers, NodeJS, and other future platforms.
-- Portability: Staying entirely in WebAssembly and WASI for max portability.
-- Compatibility: Not introducing any new concepts. Faithfulness to NodeJS APIs.
+- *Isomorphism*: Supporting runtime execution everywhere under a single API.
+- *Portability*: Staying entirely in WebAssembly and WASI for max portability.
+- *Familiarity*: Not introducing any new concepts. Faithfulness to NodeJS APIs.
 
 ## Features
 
@@ -41,12 +43,12 @@ proper global `require` function and a `module` object, just like NodeJS.
 
 Drop's JS runtime uses SWC to transpile TypeScript(X) to JavaScript on the fly.
 
-Drop currently offers the following feature sets in WebAssembly:
+Drop currently offers the embedded features in WebAssembly:
 
 - Following NodeJS modules:
-  - `assert` • `buffer`: • `crypto`: • `events`: • `fs` • `memfs` • `os`
+  - `assert` • `buffer`: • `crypto`: • `events`: • `fs` • `memfs` • `os` • `url`
   • `path` • `process` • `punycode` • `querystring` • `readline` • `stream`
-  • `string_decoder` • `timers` • `tty` • `url`: • `util` • `zlib`
+  • `string_decoder` • `timers` • `tty` • `util` • `zlib` • `test`
 - Following tools through `busybox`:
   - `base64` • `basename` • `cat` • `chmod` • `chown` • `clear` • `cp` • `date`
   • `diff` • `echo` • `egrep` • `env` • `false` • `fgrep` • `find` • `grep`
